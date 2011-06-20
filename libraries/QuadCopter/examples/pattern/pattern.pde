@@ -1,11 +1,11 @@
 #include "Servo.h"
 #include "QuadCopter.h"
 
-int aileronPin = 12; 
-int rudderPin = 9; 
-int throttlePin = 10; 
-int elevatorPin = 11; 
-int gainPin = 8; 
+int aileronPin = 12; //White 
+int rudderPin = 9; //Yellow 
+int throttlePin = 10;  //Orange 
+int elevatorPin = 11; //Red 
+int gainPin = 8;  //Green (Gain/Gear) 
 int potPin = 1; 
 
 QuadCopter ufo(aileronPin, rudderPin, throttlePin, elevatorPin, gainPin);
