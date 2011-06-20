@@ -9,31 +9,24 @@
 class QuadCopter {
 public:
 	
-	typedef enum {LEFT,RIGHT} Direction;
+	typedef enum {LONGITUDINAL=0, LATERAL, VERTICAL, ROTATIONAL} Direction;
 	
-	QuadCopter(	int aileronPin, 
-				int rudderPin, 
-				int throttlePin, 
-				int evelatorPin, 
-				int gainPin) :
-				aileronPin(aileronPin),
-				rudderPin(rudderPin),
-				throttlePin(throttlePin),
-				elevatorPin(elevatorPin),
-				gainPin(gainPin)
-				{ }
+	QuadCopter(int,int,int,int,int);
 	~QuadCopter() {}
 	void init();
-	void up(int speed = DEFAULT_SPEED);
-	void down(int speed = DEFAULT_SPEED);
-	void left(int speed = DEFAULT_SPEED);
-	void right(int speed = DEFAULT_SPEED);
-	void forward(int speed = DEFAULT_SPEED);
-	void backward(int speed = DEFAULT_SPEED);
-	void adjustGain(int gain = DEFAULT_SPEED);
-	void rotate(Direction, int speed = DEFAULT_SPEED);
-	void hover();
+	void move(int,int,int,int);
+	void move(int[]);
+	void move(Direction,int);
+	void stop(Direction);
+	void stop();
+	void throttle(int speed) {move(VERTICAL,speed);}
+	void elevator(int speed) {move(LONGITUDINAL,speed);}
+	void aileron(int speed) {move(LATERAL,speed);}
+	void rudder(int speed) {move(ROTATIONAL,speed);}
+	void adjustGain(int);
 	
+	static const int DEGREES_OF_FREEDOM = 4;
+	static const int MIN_SPEED = -100;
 	static const int STOP_SPEED = 0;
 	static const int MAX_SPEED = 100;
 
@@ -41,18 +34,14 @@ private:
 	
 	void arm();
 	void attach();
-	void setSpeed(Servo &, int);
+	void setSpeed(Direction, int);
 	
-	Servo aileron;
-	Servo rudder;
-	Servo throttle;
-	Servo elevator;
+	Servo servos[DEGREES_OF_FREEDOM];
 	Servo gain;
 	
-	int aileronPin;
-	int rudderPin;
-	int throttlePin;
-	int elevatorPin;
+	int speed[DEGREES_OF_FREEDOM];
+	
+	int pins[DEGREES_OF_FREEDOM];
 	int gainPin;
 };
 
