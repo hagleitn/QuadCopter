@@ -14,6 +14,10 @@ void setup() {
   ufo.init();
   delay(1000);
   ufo.move(QuadCopter::VERTICAL,10);
+  int speed = ufo.read(QuadCopter::VERTICAL);
+  Serial.print("Current vertical speed: ");
+  Serial.print(speed);
+  Serial.print("\n");
   delay(3000);
   ufo.stop();
 } 
@@ -35,5 +39,9 @@ void loop() {
   delay(1000);
   ufo.move(QuadCopter::LATERAL,-10);
   delay(5000);
+  int (&speed)[4] = ufo.read();
+  Serial.print("Current lateral speed: ");
+  Serial.print(speed[QuadCopter::LATERAL]);
+  Serial.print("\n");
 } 
 

@@ -17,6 +17,8 @@ public:
 	void move(Direction,int);
 	void stop(Direction);
 	void stop();
+	int read(Direction d) {return speed[d];};
+	int (&read())[4] {return speed;};
 	void throttle(int speed) {move(VERTICAL,speed);}
 	void elevator(int speed) {move(LONGITUDINAL,speed);}
 	void aileron(int speed) {move(LATERAL,speed);}
