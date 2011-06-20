@@ -1,0 +1,14 @@
+Get latest the code from
+
+git clone https://lafa@github.com/hagleitn/QuadCopter.git
+
+Goto the arduino ADK folder and create link the libraries folder
+
+cd $ADK_DIR/libraries/
+ln -s $GIT_CLONE_DIR/QuadCopter/libraries/QuadCopter QuadCopter
+
+Start Arduino IDE, and you can start using the library.
+
+For more information check
+https://github.com/hagleitn/QuadCopter/
+
