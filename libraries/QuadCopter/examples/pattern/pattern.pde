@@ -13,27 +13,27 @@ QuadCopter ufo(aileronPin, rudderPin, throttlePin, elevatorPin, gainPin);
 void setup() { 
   ufo.init();
   delay(1000);
-  ufo.up();
+  ufo.move(QuadCopter::VERTICAL,10);
   delay(3000);
-  ufo.hover();
+  ufo.stop();
 } 
 
 void loop() { 
-  ufo.hover();
+  ufo.stop();
   delay(1000);
-  ufo.left();
+  ufo.move(QuadCopter::LONGITUDINAL,10);
   delay(5000);
-  ufo.hover();
+  ufo.stop();
   delay(1000);
-  ufo.forward();
+  ufo.move(QuadCopter::LATERAL,10);
   delay(5000);
-  ufo.hover();
+  ufo.stop();
   delay(1000);
-  ufo.right();
+  ufo.move(QuadCopter::LONGITUDINAL,-10);
   delay(5000);
-  ufo.hover();
+  ufo.stop();
   delay(1000);
-  ufo.backward();
+  ufo.move(QuadCopter::LATERAL,-10);
   delay(5000);
 } 
 
