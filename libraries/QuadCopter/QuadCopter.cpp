@@ -1,8 +1,11 @@
 #include <QuadCopter.h>
 
 void QuadCopter::arm() {
+        // GAUI 330X good startup sound
+	// beep-beep-beep[increse pitch] (3S)beep-beep-beep[quick] beep[LOW]
 	stop(); // neutral state
 	adjustGain(0); // initialize gain
+        throttle(MIN_SPEED); //setting required to allow the 330X to start
 }
 
 QuadCopter::QuadCopter(	
@@ -12,11 +15,11 @@ QuadCopter::QuadCopter(
 	int elevatorPin, 
 	int gainPin) 
 {
-	pins[0] = elevatorPin;
-	pins[1] = aileronPin;
-	pins[2] = throttlePin;
-	pins[3] = rudderPin;
-	this->gainPin = gainPin;
+	pins[0] = elevatorPin;   // Red 
+	pins[1] = aileronPin;    // White 
+	pins[2] = throttlePin;   // Orange 
+	pins[3] = rudderPin;     // Yellow 
+	this->gainPin = gainPin; // Green (Gain/Gear) 
 	speed[0] = speed[1] = speed[2] = speed[3] = 0;
 }
 
@@ -34,7 +37,7 @@ void QuadCopter::init() {
 }
 
 void QuadCopter::adjustGain(int gainVal) {
-	gain.write(map(gainVal,MIN_SPEED,MAX_SPEED,0,180));
+	gain.write(map(gainVal, MIN_SPEED, MAX_SPEED, 0, 180));
 }
 
 void QuadCopter::stop(Direction d) {
@@ -56,12 +59,11 @@ void QuadCopter::move(Direction d, int speed) {
 	
 	Servo &s = this->servos[d];
 	
-	speed = map(speed,-100,100,0,180);
-	this->speed[d] = speed;
-	
+	speed = map(speed ,MIN_SPEED, MAX_SPEED, 0, 180);	
 	
 	if (speed != s.read()) { 
 		s.write(speed);
+		this->speed[d] = speed;	
 	}
 }
 

@@ -7,12 +7,19 @@
 class QuadCopter {
 public:
 	
-	typedef enum {LONGITUDINAL=0, LATERAL, VERTICAL, ROTATIONAL} Direction;
-	
-	QuadCopter(int,int,int,int,int);
+	typedef enum {LONGITUDINAL=0, LATERAL=1, VERTICAL=2, ROTATIONAL=3} Direction;
+	/*
+		Colour map for GU-344 gyro pins (available with GAUI 330X)
+		aileronPin;    // White 
+		rudderPin;     // Yellow 
+		throttlePin;   // Orange 
+		elevatorPin;   // Red 
+		gainPin;       // Green (Gain/Gear) 
+	*/
+	QuadCopter(int aileronPin, int rudderPin, int throttlePin, int elevatorPin, int gainPin);
 	~QuadCopter() {}
 	void init();
-	void move(int,int,int,int);
+	void move(int x, int y, int z, int r);
 	void move(int[]);
 	void move(Direction,int);
 	void stop(Direction);
