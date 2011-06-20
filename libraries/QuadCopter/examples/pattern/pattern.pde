@@ -17,9 +17,14 @@ void setup() {
 
 void loop() {
   int foo = analogRead(potPin);
-  ufo.throttle(map(foo,0,1023,-100,100));
-  Serial.print(map(foo,0,1023,-100,100)); 
-  Serial.print("\n"); 
+  
+  int throttle = map(foo,0,1023,-100,100);
+  ufo.throttle(throttle);
+  
+  String text = "throttle: ";
+  text.concat(throttle);
+  Serial.println(text);
+  
   delay(10);
 } 
 
