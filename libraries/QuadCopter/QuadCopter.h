@@ -4,8 +4,6 @@
 #include "WProgram.h"
 #include "Servo.h"
 
-#define DEFAULT_SPEED 10
-
 class QuadCopter {
 public:
 	
@@ -34,7 +32,6 @@ private:
 	
 	void arm();
 	void attach();
-	void setSpeed(Direction, int);
 	
 	Servo servos[DEGREES_OF_FREEDOM];
 	Servo gain;
