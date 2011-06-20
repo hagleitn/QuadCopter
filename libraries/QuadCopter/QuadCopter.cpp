@@ -1,11 +1,8 @@
 #include <QuadCopter.h>
 
 void QuadCopter::arm() {
-	setSpeed(aileron, 90); 
-	setSpeed(rudder, 90); 
-	setSpeed(throttle, 90); 
-	setSpeed(elevator, 90); 
-	setSpeed(gain, 90); 
+	hover(); // neutral state
+	adjustGain(0); // initialize gain
 }
 
 void QuadCopter::attach() {
@@ -19,6 +16,10 @@ void QuadCopter::attach() {
 void QuadCopter::init() {
 	attach();
 	arm();
+}
+
+void QuadCopter::rotate(Direction d, int speed) {
+	setSpeed(rudder,d==LEFT?-speed:speed);
 }
 
 void QuadCopter::left(int speed) {
@@ -50,16 +51,17 @@ void QuadCopter::adjustGain(int gainVal) {
 }
 
 void QuadCopter::hover() {
-	left(0);
-	up(0);
-	forward(0);
+	left(STOP_SPEED);
+	up(STOP_SPEED);
+	forward(STOP_SPEED);
+	rotate(LEFT, STOP_SPEED);
 }
 
 void QuadCopter::setSpeed(Servo &s, int speed) {
 	if (speed > MAX_SPEED) {
 		speed = MAX_SPEED;
-	} else if (speed < MIN_SPEED) {
-		speed = MIN_SPEED;
+	} else if (speed < STOP_SPEED) {
+		speed = STOP_SPEED;
 	}
 	
 	speed = map(speed,-100,100,0,180);

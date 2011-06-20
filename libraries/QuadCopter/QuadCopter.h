@@ -8,6 +8,9 @@
 
 class QuadCopter {
 public:
+	
+	typedef enum {LEFT,RIGHT} Direction;
+	
 	QuadCopter(	int aileronPin, 
 				int rudderPin, 
 				int throttlePin, 
@@ -28,9 +31,10 @@ public:
 	void forward(int speed = DEFAULT_SPEED);
 	void backward(int speed = DEFAULT_SPEED);
 	void adjustGain(int gain = DEFAULT_SPEED);
+	void rotate(Direction, int speed = DEFAULT_SPEED);
 	void hover();
 	
-	static const int MIN_SPEED = 0;
+	static const int STOP_SPEED = 0;
 	static const int MAX_SPEED = 100;
 
 private:
