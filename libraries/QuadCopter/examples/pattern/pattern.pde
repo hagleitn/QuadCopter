@@ -11,29 +11,15 @@ int potPin = 1;
 QuadCopter ufo(aileronPin, rudderPin, throttlePin, elevatorPin, gainPin);
 
 void setup() { 
+  Serial.begin(9600);
   ufo.init();
-  delay(1000);
-  ufo.move(QuadCopter::VERTICAL,10);
-  delay(3000);
-  ufo.stop();
 } 
 
-void loop() { 
-  ufo.stop();
-  delay(1000);
-  ufo.move(QuadCopter::LONGITUDINAL,10);
-  delay(5000);
-  ufo.stop();
-  delay(1000);
-  ufo.move(QuadCopter::LATERAL,10);
-  delay(5000);
-  ufo.stop();
-  delay(1000);
-  ufo.move(QuadCopter::LONGITUDINAL,-10);
-  delay(5000);
-  ufo.stop();
-  delay(1000);
-  ufo.move(QuadCopter::LATERAL,-10);
-  delay(5000);
+void loop() {
+  int foo = analogRead(potPin);
+  ufo.throttle(map(foo,0,1023,-100,100));
+  Serial.print(map(foo,0,1023,-100,100)); 
+  Serial.print("\n"); 
+  delay(10);
 } 
 
