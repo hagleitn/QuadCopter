@@ -65,6 +65,13 @@ void doCmd() {
       ufo.stop();
       break;
 
+    // Command "X" stops the thing
+    case 'x':
+    case 'X':
+      ufo.stop();
+      ufo.throttle(QuadCopter::MIN_SPEED);
+      break;
+
     // Command "G <int>" sets the gain
     case 'g':
     case 'G':
