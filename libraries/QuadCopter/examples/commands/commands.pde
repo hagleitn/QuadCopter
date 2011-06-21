@@ -8,7 +8,8 @@ int aileronPin = 12; //White
 int rudderPin = 9; //Yellow 
 int throttlePin = 10;  //Orange 
 int elevatorPin = 11; //Red 
-int gainPin = 8;  //Green (Gain/Gear)
+int gainPin = 7;  //Green (Gain/Gear)
+int killPin = 8; // LOW kills the flight
 
 long start_sleep;
 bool start_command;
@@ -21,6 +22,8 @@ void setup() {
   Serial.begin(9600);
 
   ufo.init();
+
+  pinMode(killPin, INPUT);
 
   cmd[255] = 0;
   p = cmd;
@@ -102,6 +105,11 @@ void doCmd() {
 }
 
 void loop() {
+
+  if (digitalRead(killPin) == LOW) {
+	ufo.stop();
+	ufo.throttle(QuadCopter::MIN_SPEED);
+  }
   
   if (start_sleep != 0) {
     if (millis()-start_sleep < sleep_time) {
