@@ -49,7 +49,13 @@ void doCmd() {
     case 'r':
     case 'R':
       sscanf(&cmd[2],"%d",&x);
-      ufo.throttle(x);
+      ufo.rudder(x);
+      break;
+
+    case 'g':
+    case 'G':
+      scanf(&cmd[2],"%d",&x);
+      ufo.adjustGain(x);
       break;
 
     default:
@@ -70,6 +76,6 @@ void loop() {
       p = cmd;
     } else {
       ++p;
-	}
+    }
   } 
 }
