@@ -67,7 +67,9 @@ void doCmd() {
       ufo.rudder(x);
       break;
 
-    // Command "S" returns to hover     
+    // Command "S" or "H" returns to hover     
+    case 'h':
+    case 'H':
     case 's':
     case 'S':
       ufo.stop();
