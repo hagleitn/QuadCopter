@@ -10,6 +10,11 @@ int throttlePin = 10;  //Orange
 int elevatorPin = 11; //Red 
 int gainPin = 8;  //Green (Gain/Gear)
 
+long start_sleep;
+bool start_command;
+long sleep_time;
+
+
 QuadCopter ufo(aileronPin, rudderPin, throttlePin, elevatorPin, gainPin);
 
 void setup() {
@@ -19,6 +24,9 @@ void setup() {
 
   cmd[255] = 0;
   p = cmd;
+  sleep_time = 0;
+  start_sleep = 0;
+  start_command = false;
 }
 
 void doCmd() {
@@ -65,13 +73,6 @@ void doCmd() {
       ufo.stop();
       break;
 
-    // Command "X" stops the thing
-    case 'x':
-    case 'X':
-      ufo.stop();
-      ufo.throttle(QuadCopter::MIN_SPEED);
-      break;
-
     // Command "G <int>" sets the gain
     case 'g':
     case 'G':
@@ -83,25 +84,48 @@ void doCmd() {
     case 'z':
     case 'Z':
       sscanf(&cmd[2],"%d",&x);
-      delay(x);
+	  sleep_time = x;
+	  start_sleep = millis();
       break;
 
-    default:
-      // nothing
+	// Command "X" stops the thing
+    case 'x':
+    case 'X':
+      default:
+      ufo.stop();
+      ufo.throttle(QuadCopter::MIN_SPEED);
       break;
   }
 }
 
 void loop() {
+  
+  if (start_sleep != 0) {
+    if (millis()-start_sleep < sleep_time) {
+      delay(100);
+      return;
+    } else {
+      sleep_time = 0;
+      start_sleep = 0;
+    }
+  }
+
   if (Serial.available() > 0) {
     *p = Serial.read();
+
+	if (start_command && *p == ' ') {
+	  return;
+	} else {
+	  start_command = false;
+	}
     
     if (*p == ';' || p-cmd == 254) {
       *p = 0;
       Serial.print("I received: ");
-      Serial.println(cmd);
+      Serial.print(cmd);
       doCmd();
       p = cmd;
+	  start_command = true;
     } else {
       ++p;
     }
