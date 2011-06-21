@@ -14,6 +14,7 @@ QuadCopter ufo(aileronPin, rudderPin, throttlePin, elevatorPin, gainPin);
 
 void setup() {
   Serial.begin(9600);
+  cmd[255] = 0;
   p = cmd;
   ufo.init();
 }
@@ -61,13 +62,14 @@ void loop() {
   if (Serial.available() > 0) {
     *p = Serial.read();
     
-    if (*p == '\n' || p-cmd == 255) {
+    if (*p == '\n' || p-cmd == 254) {
+      *p = 0;
       Serial.print("I received: ");
       Serial.println(cmd);
-      *p = 0;
       doCmd();
       p = cmd;
-    }
-    ++p;
+    } else {
+      ++p;
+	}
   } 
 }
