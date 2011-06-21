@@ -96,7 +96,7 @@ void loop() {
   if (Serial.available() > 0) {
     *p = Serial.read();
     
-    if (*p == '\n' || p-cmd == 254) {
+    if (*p == ';' || p-cmd == 254) {
       *p = 0;
       Serial.print("I received: ");
       Serial.println(cmd);
