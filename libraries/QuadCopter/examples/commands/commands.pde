@@ -121,7 +121,6 @@ void loop() {
     
     if (*p == ';' || p-cmd == 254) {
       *p = 0;
-      Serial.print("I received: ");
       Serial.print(cmd);
       doCmd();
       p = cmd;
