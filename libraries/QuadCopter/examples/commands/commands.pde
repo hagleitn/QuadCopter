@@ -43,6 +43,7 @@ void doCmd() {
     case 't':
     case 'T':
       sscanf(&cmd[2],"%d",&x);
+      if (x > -20) {x = -20;}
       ufo.throttle(x);
       break;
 
