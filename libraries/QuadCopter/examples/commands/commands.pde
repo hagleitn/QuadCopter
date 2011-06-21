@@ -75,8 +75,15 @@ void doCmd() {
     // Command "G <int>" sets the gain
     case 'g':
     case 'G':
-      scanf(&cmd[2],"%d",&x);
+      sscanf(&cmd[2],"%d",&x);
       ufo.adjustGain(x);
+      break;
+
+    // Command "Z <int>" sleeps zzzz
+    case 'z':
+    case 'Z':
+      sscanf(&cmd[2],"%d",&x);
+      delay(x);
       break;
 
     default:
