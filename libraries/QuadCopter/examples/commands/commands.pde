@@ -12,11 +12,12 @@ int killPin = 8; // LOW kills the flight
 
 SerialController controller(
     QuadCopter(aileronPin, rudderPin, throttlePin, elevatorPin, gainPin),
-    Tokenizer(';'),
+    Tokenizer(';',0),
     killPin
 );
 
 void setup() {
+    Serial.begin(9600);
     controller.init();
 }
 
