@@ -30,5 +30,8 @@ const char *Tokenizer::read() {
             ++p;
         }
     }
+	Serial.print("Tokenizer::read - \"");
+	Serial.print(ret);
+	Serial.println("\"");
     return ret;
 }
