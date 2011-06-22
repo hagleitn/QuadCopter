@@ -1,15 +1,12 @@
 #include <Tokenizer.h>
 #include <ctype.h>
+#include <HardwareSerial.h>
 
 
 void Tokenizer::init() {
+    Serial.println("Tokenizer::init()");
     p = buf = (char*) malloc(size+1);
     buf[size] = 0;
-    
-    if (baud != 0) {
-        Serial.begin(baud);
-    }
-    Serial.println("Tokenizer::init()");
 }
 
 const char *Tokenizer::read() {

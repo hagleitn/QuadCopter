@@ -10,11 +10,8 @@ int elevatorPin = 11; //Red
 int gainPin = 7;  //Green (Gain/Gear)
 int killPin = 8; // LOW kills the flight
 
-SerialController controller(
-    QuadCopter(aileronPin, rudderPin, throttlePin, elevatorPin, gainPin),
-    Tokenizer(';',0),
-    killPin
-);
+SerialController controller(aileronPin, rudderPin, throttlePin, 
+                            elevatorPin, gainPin, killPin);
 
 void setup() {
     Serial.begin(9600);
