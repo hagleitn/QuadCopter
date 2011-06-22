@@ -13,6 +13,8 @@ const char *Tokenizer::read() {
     char *ret = 0;
     while (Serial.available() > 0) {
         *p = Serial.read();
+		Serial.print("Character received: ");
+		Serial.println(*p);
 
         if (startToken && isspace(*p)) {
             continue;
