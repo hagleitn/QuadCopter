@@ -25,13 +25,13 @@ const char *Tokenizer::read() {
             p = buf;
             startToken = true;
             ret = buf;
+			Serial.print("Tokenizer::read - \"");
+			Serial.print(ret);
+			Serial.println("\"");
             break;
         } else {
             ++p;
         }
     }
-	Serial.print("Tokenizer::read - \"");
-	Serial.print(ret);
-	Serial.println("\"");
     return ret;
 }
