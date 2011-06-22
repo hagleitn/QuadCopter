@@ -3,10 +3,13 @@
 
 
 void Tokenizer::init() {
-    p = buf = (char*) malloc(size);
+    p = buf = (char*) malloc(size+1);
+    buf[size] = 0;
+    
     if (baud != 0) {
         Serial.begin(baud);
     }
+    Serial.println("Tokenizer::init()");
 }
 
 const char *Tokenizer::read() {
@@ -15,7 +18,7 @@ const char *Tokenizer::read() {
         *p = Serial.read();
 
         if (startToken && isspace(*p)) {
-			Serial.println("removing whitespace");
+            Serial.println("removing whitespace");
             continue;
         } else {
             startToken = false;
@@ -23,12 +26,9 @@ const char *Tokenizer::read() {
 
         if (*p == delim || p-buf == size) {
             *p = 0;
-            p = buf;
+            p = ret = buf;
             startToken = true;
-            ret = buf;
-			Serial.print("Tokenizer::read - \"");
-			Serial.print(ret);
-			Serial.print("\"");
+            Serial.println(ret);
             break;
         } else {
             ++p;

@@ -7,7 +7,7 @@ class Tokenizer {
 
 public:
     
-    Tokenizer(char delim, int baud = 9600, size_t size = 128) : 
+    Tokenizer(char delim, int baud = 9600, size_t size = 127) : 
             delim(delim), baud(baud), buf(0), p(0), startToken(true), size(size) {}
     ~Tokenizer() { if(0 != buf) free(buf); }
     void init();
