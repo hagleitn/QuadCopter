@@ -1,6 +1,5 @@
 #include <Tokenizer.h>
 #include <ctype.h>
-#include <HardwareSerial.h>
 
 
 void Tokenizer::init() {
@@ -11,8 +10,8 @@ void Tokenizer::init() {
 
 const char *Tokenizer::read() {
     char *ret = 0;
-    while (Serial.available() > 0) {
-        *p = Serial.read();
+    while (reader.available() > 0) {
+        *p = reader.read();
 
         if (startToken && isspace(*p)) {
             Serial.println("removing whitespace");

@@ -2,6 +2,7 @@
 #include "SerialController.h"
 #include "QuadCopter.h"
 #include "Tokenizer.h"
+#include "HardwareReader.h"
 
 int aileronPin = 12; //White 
 int rudderPin = 9; //Yellow 
@@ -10,8 +11,9 @@ int elevatorPin = 11; //Red
 int gainPin = 7;  //Green (Gain/Gear)
 int killPin = 8; // LOW kills the flight
 
+HardwareReader r(Serial);
 SerialController controller(aileronPin, rudderPin, throttlePin, 
-                            elevatorPin, gainPin, killPin);
+                            elevatorPin, gainPin, killPin, r);
 
 void setup() {
     Serial.begin(9600);
