@@ -5,8 +5,8 @@ class CommandParser {
     
 public:
     
-	virtual void doCmd(const char *) = 0;
-	virtual void fail() = 0;
+    virtual void doCmd(const char *) = 0;
+    virtual void fail() = 0;
 	
 };
 
