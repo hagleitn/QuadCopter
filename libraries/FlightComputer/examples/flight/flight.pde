@@ -2,11 +2,11 @@
 #include <Servo.h>
 #include <SerialController.h>
 #include <QuadCopter.h>
-#include <QuadCopterCommandParser.h>
-#include <CommandParser.h>
 #include <Tokenizer.h>
 #include <HardwareReader.h>
-#include <QuadCopterCommandParser.h>
+#include <CommandParser.h>
+#include <FlightComputer.h>
+#include <FlightComputerCommandParser.h>
 
 int aileronPin = 12; //White 
 int rudderPin = 9; //Yellow 
@@ -17,12 +17,14 @@ int killPin = 8; // LOW kills the flight
 
 HardwareReader reader(Serial);
 QuadCopter ufo(aileronPin, rudderPin, throttlePin, elevatorPin, gainPin);
-QuadCopterCommandParser parser(ufo);
+FlightComputer computer(ufo);
+FlightComputerCommandParser parser(computer);
 SerialController controller(parser, killPin, reader);
 
 void setup() {
     Serial.begin(9600);
     ufo.init();
+    computer.init();
     controller.init();
 }
 
