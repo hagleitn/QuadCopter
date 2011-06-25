@@ -21,7 +21,7 @@ private:
     char *p;
     bool startToken;
     size_t size;
-	Reader &reader;
+    Reader &reader;
 };
 
 #endif
