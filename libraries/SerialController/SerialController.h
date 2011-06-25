@@ -1,20 +1,18 @@
 #ifndef SERIAL_CONTROLLER_H
 #define SERIAL_CONTROLLER_H
 
-#include "WProgram.h"
-#include "Tokenizer.h"
-#include "QuadCopter.h"
+#include <WProgram.h>
+#include <Tokenizer.h>
+class CommandParser;
 
 class SerialController {
     
 public:
     
-    SerialController(int aileronPin, int rudderPin, int throttlePin, 
-                     int elevatorPin, int gainPin, int killPin, Reader &r) : 
-        ufo(aileronPin,rudderPin,throttlePin,elevatorPin,gainPin), 
-        token(';', r), killPin(killPin), sleepTime(0), startSleep(0) {}
+    SerialController(CommandParser &parser, int killPin, Reader &r) : 
+        parser(parser), token(';', r), killPin(killPin), sleepTime(0), startSleep(0) {}
     ~SerialController() {}
-    void init() { ufo.init(); token.init(); pinMode(killPin, INPUT); }
+    void init() { token.init(); pinMode(killPin, INPUT); }
     void executeCommand();
     
 private:
@@ -22,7 +20,7 @@ private:
     void doCmd(const char *);
     void fail();
     
-    QuadCopter ufo;
+    CommandParser &parser;
     Tokenizer token;
     int killPin;
     long sleepTime;

@@ -9,11 +9,11 @@ void QuadCopter::arm() {
 }
 
 QuadCopter::QuadCopter( 
-    int aileronPin, 
-    int rudderPin, 
-    int throttlePin, 
-    int elevatorPin, 
-    int gainPin) 
+                       int aileronPin, 
+                       int rudderPin, 
+                       int throttlePin, 
+                       int elevatorPin, 
+                       int gainPin) 
 {
     pins[0] = elevatorPin;   // Red 
     pins[1] = aileronPin;    // White 

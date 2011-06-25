@@ -1,8 +1,8 @@
 #ifndef SOFTWARE_READER_H
 #define SOFTWARE_READER_H
 
-#include "Reader.h"
-#include "SoftwareSerial.h"
+#include <Reader.h>
+#include <SoftwareSerial.h>
 
 class SoftwareReader : public Reader {
 public:

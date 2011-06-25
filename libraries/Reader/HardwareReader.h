@@ -1,8 +1,8 @@
 #ifndef HARDWARE_READER_H
 #define HARDWARE_READER_H
 
-#include "Reader.h"
-#include "HardwareSerial.h"
+#include <Reader.h>
+#include <HardwareReader.h>
 
 class HardwareReader : public Reader {
 public:

@@ -1,21 +1,21 @@
 #ifndef QUADCOPTER_H
 #define QUADCOPTER_H
 
-#include "WProgram.h"
-#include "Servo.h"
+#include <WProgram.h>
+#include <Servo.h>
 
 class QuadCopter {
 public:
     
     typedef enum {LONGITUDINAL=0, LATERAL=1, VERTICAL=2, ROTATIONAL=3} Direction;
     /*
-        Colour map for GU-344 gyro pins (available with GAUI 330X)
-        aileronPin;    // White 
-        rudderPin;     // Yellow 
-        throttlePin;   // Orange 
-        elevatorPin;   // Red 
-        gainPin;       // Green (Gain/Gear) 
-    */
+     Colour map for GU-344 gyro pins (available with GAUI 330X)
+     aileronPin;    // White 
+     rudderPin;     // Yellow 
+     throttlePin;   // Orange 
+     elevatorPin;   // Red 
+     gainPin;       // Green (Gain/Gear) 
+     */
     QuadCopter(int aileronPin, int rudderPin, int throttlePin, int elevatorPin, int gainPin);
     ~QuadCopter() {}
     void init();
@@ -36,7 +36,7 @@ public:
     static const int MIN_SPEED = -100;
     static const int STOP_SPEED = 0;
     static const int MAX_SPEED = 100;
-
+    
 private:
     
     void arm();
