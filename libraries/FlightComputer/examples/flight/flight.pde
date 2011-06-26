@@ -7,6 +7,7 @@
 #include <CommandParser.h>
 #include <FlightComputer.h>
 #include <FlightComputerCommandParser.h>
+#include <MedianMeasurement.h>
 #include <DistanceListener.h>
 #include <UltraSoundSignal.h>
 
@@ -30,6 +31,7 @@ void setup() {
     ufo.init();
     computer.init();
     controller.init();
+    distance.init();
     distance.registerListener(&computer);
 }
 

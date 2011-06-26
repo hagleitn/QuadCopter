@@ -1,6 +1,6 @@
 #include <UltraSoundSignal.h>
 
-long UltraSoundSignal::read() {
+bool UltraSoundSignal::read() {
     // establish variables for duration of the ping, 
     // and the distance result in inches and centimeters:
     long duration;
@@ -20,17 +20,21 @@ long UltraSoundSignal::read() {
     pinMode(pin, INPUT);
     duration = pulseIn(pin, HIGH);
     
-    
-    oldDistance = distance;
-    oldTime = time;
-    
     // convert the time into a distance
-    distance = centimeters(duration);
-    time = millis();
-    
-    speed = (long)(((float)(distance - oldDistance)) / (((float)(time - oldTime)) / 1000));
-    
-    return distance;
+    int newDistance = centimeters(duration);
+    if (newDistance > MAX_RELIABLE) {
+        newDistance = -1;
+    }
+    median.pushMeasurement(newDistance);
+    bool success = median.getMedian(distance[index],time[index]);
+    if (success) {
+        ++index;
+        if (index > size) {
+            full = true;
+            index %= size;
+        }
+    }
+    return success;
 }
 
 long UltraSoundSignal::centimeters(long microseconds)
@@ -45,7 +49,21 @@ void UltraSoundSignal::registerListener(DistanceListener *listener) {
     this->listener = listener;
 }
 
+bool UltraSoundSignal::computeSpeed() {
+    int oldest = index;
+    int newest = (size+index-1)%size;
+    if (!full || distance[oldest] == -1 || distance[newest] == -1 || (time[newest] - time[oldest]) < MIN_TIME_FOR_SPEED) {
+        return false;
+    }
+    speed = (long)(((float)(distance[newest] - distance[oldest])) / (((float)(time[newest] - time[oldest])) / 1000));
+    return true;
+}
+
 void UltraSoundSignal::signal() {
-    read();
-    listener->update(distance,speed,delay);
+    if (read()) {
+        if (computeSpeed()) {
+            int newest = (size+index-1)%size;
+            listener->update(distance[newest],speed,time[newest]);
+        }
+    }
 }
