@@ -4,26 +4,35 @@ void FlightComputer::init() {
 }
 
 void FlightComputer::takeoff(int meters) {
-    ufo.throttle(-95);
+    ufo.throttle(-28);
 }
 
 void FlightComputer::hover(int meters) {
-    ufo.throttle(-98);
+    ufo.throttle(-10);
 }
 
 void FlightComputer::land() {
-    ufo.throttle(0);
+    ufo.throttle(QuadCopter::MIN_SPEED);
 }
 
 void FlightComputer::abort() {
-    ufo.throttle(0);
+    ufo.throttle(QuadCopter::MIN_SPEED);
 }
 
 // receive height, speed
-void FlightComputer::update(long height, long speed, int delay) {
+void FlightComputer::update(long height, long speed, long time) {
     this->height = height;
     this->speed = speed;
-    this->delay = delay;
+    this->time = time;
+    if (time - lastTime > 1000) {
+        Serial.print("height: ");
+        Serial.print(this->height);
+        Serial.print(" speed: ");
+        Serial.print(this->speed);
+        Serial.print(" time: ");
+        Serial.println(this->time);
+	lastTime = time;
+    }
 }
 
 // adjust controls to meet goal

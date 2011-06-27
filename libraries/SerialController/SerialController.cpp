@@ -2,8 +2,12 @@
 #include <CommandParser.h>
 
 void SerialController::executeCommand() {
-    if (digitalRead(killPin) == LOW) {
-		parser.fail();
+    int valueKillPin = digitalRead(killPin);
+    if (valueKillPin != lastValueKillPin) {
+        Serial.println("Kill pin changed: ");
+        Serial.println(valueKillPin);
+        parser.fail();
+	lastValueKillPin = valueKillPin;
     }
     
     if (startSleep != 0) {

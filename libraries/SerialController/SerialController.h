@@ -10,7 +10,7 @@ class SerialController {
 public:
     
     SerialController(CommandParser &parser, int killPin, Reader &r) : 
-        parser(parser), token(';', r), killPin(killPin), sleepTime(0), startSleep(0) {}
+      parser(parser), token(';', r), lastValueKillPin(HIGH), killPin(killPin), sleepTime(0), startSleep(0) {}
     ~SerialController() {}
     void init() { token.init(); pinMode(killPin, INPUT); }
     void executeCommand();
@@ -23,6 +23,7 @@ private:
     CommandParser &parser;
     Tokenizer token;
     int killPin;
+    int lastValueKillPin;
     long sleepTime;
     long startSleep;
 };

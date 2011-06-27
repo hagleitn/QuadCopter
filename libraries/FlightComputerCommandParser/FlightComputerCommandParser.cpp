@@ -26,7 +26,7 @@ void FlightComputerCommandParser::doCmd(const char *cmd) {
             computer.takeoff(x);
             break;
 			
-        // Command "L <int>" lands the thing
+        // Command "L" lands the thing
         case 'l':
         case 'L':
             computer.land();
