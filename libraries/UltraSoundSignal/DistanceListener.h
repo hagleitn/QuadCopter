@@ -5,7 +5,7 @@
 
 class DistanceListener {
 public:
-    virtual void update(long x, long v, int delay) = 0;
+    virtual void update(long x, long v, long time) = 0;
 };
 
 #endif

@@ -22,17 +22,33 @@ bool UltraSoundSignal::read() {
     
     // convert the time into a distance
     int newDistance = centimeters(duration);
+
+    // Serial.print("raw distance: ");
+    // Serial.println(newDistance);
+
     if (newDistance > MAX_RELIABLE) {
+        Serial.print(newDistance);
+        Serial.println(" > than MAX_RELIABLE");
         newDistance = -1;
     }
+
     median.pushMeasurement(newDistance);
     bool success = median.getMedian(distance[index],time[index]);
     if (success) {
+        //        Serial.print("median distance: (index: ");
+        //	Serial.print(index);
+        //        Serial.print(") ");
+        //        Serial.println(distance[index]);
+
+	//	  Serial.print("INDEX: ");
+	//	  Serial.print(index);
+	//	  Serial.print(", ");
         ++index;
-        if (index > size) {
+        if (index >= size) {
             full = true;
             index %= size;
         }
+	//	  Serial.println(index);
     }
     return success;
 }
@@ -53,6 +69,13 @@ bool UltraSoundSignal::computeSpeed() {
     int oldest = index;
     int newest = (size+index-1)%size;
     if (!full || distance[oldest] == -1 || distance[newest] == -1 || (time[newest] - time[oldest]) < MIN_TIME_FOR_SPEED) {
+        //Serial.print("time delta: (");
+        //Serial.print(newest);
+        //Serial.print(", ");
+        //Serial.print(oldest);
+        //Serial.print("): ");
+        //Serial.println(time[newest] - time[oldest]);
+      
         return false;
     }
     speed = (long)(((float)(distance[newest] - distance[oldest])) / (((float)(time[newest] - time[oldest])) / 1000));
@@ -62,6 +85,7 @@ bool UltraSoundSignal::computeSpeed() {
 void UltraSoundSignal::signal() {
     if (read()) {
         if (computeSpeed()) {
+	    // Serial.println("sending update...");
             int newest = (size+index-1)%size;
             listener->update(distance[newest],speed,time[newest]);
         }

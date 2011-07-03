@@ -5,17 +5,17 @@
 
 class DummyListener : public DistanceListener {
 public:
-    virtual void update(long x, long v, int delay) {
+    virtual void update(long x, long v, long time) {
         Serial.print("Location: ");
         Serial.print(x);
         Serial.print(" Speed: ");
         Serial.print(v);
-        Serial.print(" Time: "); 
-        Serial.println("delay");
+        Serial.print(" Time: ");
+        Serial.println(time);
     }
 };
 
-int pingPin = 13; // ultrasound sensor
+int pingPin = 2; // ultrasound sensor
 
 UltraSoundSignal distance(pingPin);
 DummyListener listener;
@@ -28,4 +28,5 @@ void setup() {
 
 void loop() {
     distance.signal();
+    delay(500);
 }
