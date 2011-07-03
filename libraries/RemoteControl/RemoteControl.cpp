@@ -21,3 +21,9 @@ void RemoteControl::update() {
         ufo.writeRaw((QuadCopter::Direction)i,value);
     }
 }
+
+bool RemoteControl::isEngaged() {
+    int vertical = ufo.readRaw(QuadCopter::VERTICAL);
+    int value = pulseIn(pins[QuadCopter::VERTICAL],HIGH);
+    return value > THROTTLE_MIN && value > vertical;
+}

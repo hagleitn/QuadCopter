@@ -11,8 +11,12 @@ public:
     ~RemoteControl() {}
     void init();
     void update();
+    bool isEngaged();
     
 private:
+    
+    static const int THROTTLE_MIN = 100;
+    
     int pins[QuadCopter::DEGREES_OF_FREEDOM];
     int gainPin;
     QuadCopter &ufo;    

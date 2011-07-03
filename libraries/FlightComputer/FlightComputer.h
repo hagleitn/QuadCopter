@@ -4,12 +4,13 @@
 #include <WProgram.h>
 #include <QuadCopter.h>
 #include <DistanceListener.h>
+#include <RemoteControl.h>
 
 class FlightComputer : public DistanceListener {
 public:
     
-    FlightComputer(QuadCopter& ufo) : ufo(ufo), height(0), speed(0), time(0), lastTime(0), 
-    goalSpeed(0), goalHeight(0), lastChange(0), curThrottle(QuadCopter::MIN_SPEED), minDelta(1000) {};
+    FlightComputer(QuadCopter& ufo, RemoteControl &rc) : ufo(ufo), rc(rc), height(0), speed(0), time(0), lastTime(0), 
+    goalSpeed(0), goalHeight(0), lastChange(0), curThrottle(QuadCopter::MIN_SPEED), minDelta(1000), override(false) {};
     ~FlightComputer() {}
     void init();
     void takeoff(int);
@@ -21,6 +22,7 @@ public:
     
 private:
     QuadCopter &ufo;
+    RemoteControl &rc;
     long height;
     long speed;
     long goalSpeed;
@@ -30,6 +32,7 @@ private:
     long time;
     long minDelta;
     long lastTime; // debugging
+    bool override;
     
 };
 

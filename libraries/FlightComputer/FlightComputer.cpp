@@ -44,16 +44,22 @@ void FlightComputer::update(long height, long speed, long time) {
 
 // adjust controls to meet goal
 void FlightComputer::adjust() {
-    if (time - lastChange > minDelta) {
-        if (goalHeight < height) {
-            land();
-        } else if (speed < goalSpeed && curThrottle < 30) {
-            curThrottle += 10;
-            Serial.print("Throttle: ");
-            Serial.println(curThrottle);
-            ufo.throttle(curThrottle);
+    if (override) {
+        rc.update();
+    } else if (rc.isEngaged()) {
+        override = true;
+    } else {
+        if (time - lastChange > minDelta) {
+            if (goalHeight < height) {
+                land();
+            } else if (speed < goalSpeed && curThrottle < 30) {
+                curThrottle += 10;
+                Serial.print("Throttle: ");
+                Serial.println(curThrottle);
+                ufo.throttle(curThrottle);
+            }
+            lastChange = time;
         }
-        lastChange = time;
     }
 }
 
