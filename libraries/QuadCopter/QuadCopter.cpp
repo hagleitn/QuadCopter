@@ -20,7 +20,6 @@ QuadCopter::QuadCopter(
     pins[2] = throttlePin;   // Orange 
     pins[3] = rudderPin;     // Yellow 
     this->gainPin = gainPin; // Green (Gain/Gear) 
-    speed[0] = speed[1] = speed[2] = speed[3] = 0;
 }
 
 
@@ -63,7 +62,6 @@ void QuadCopter::move(Direction d, int speed) {
     
     if (speed != s.read()) { 
         s.write(speed);
-        this->speed[d] = speed; 
     }
 }
 
@@ -78,4 +76,29 @@ void QuadCopter::move(int x, int y, int z, int r) {
     move(LATERAL, y);
     move(VERTICAL, z);
     move(ROTATIONAL, r);
+}
+
+int QuadCopter::read(Direction d) {
+    Servo &s = this->servos[d];
+    int speed = s.read();
+    speed = map(speed, 0, 180, MIN_SPEED, MAX_SPEED);
+    return speed;
+}
+
+int QuadCopter::readInternal(int *speeds, int size, bool raw) {
+    int length = size < DEGREES_OF_FREEDOM?DEGREES_OF_FREEDOM:size;
+    for (int i = 0; i < length; ++i) {
+        speeds[i] = raw?readRaw((Direction)i):read((Direction)i);
+    }
+    return length;
+}
+
+int QuadCopter::readRaw(Direction d) {
+    Servo &s = this->servos[d];
+    return s.readMicroseconds();
+}
+
+void QuadCopter::writeRaw(Direction d, int value) {
+    Servo &s = this->servos[d];
+    s.writeMicroseconds(value);
 }
