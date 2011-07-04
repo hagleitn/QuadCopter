@@ -9,13 +9,13 @@ public:
     MedianMeasurement(size_t size) : size(size), cur(0) {};
     ~MedianMeasurement();
     void init();
-    bool getMedian(long &time, long& median);
-    void pushMeasurement(long value);
-    void pushMeasurement(long value, long time);
+    bool getMedian(double &median, long &time);
+    void pushMeasurement(double value);
+    void pushMeasurement(double value, long time);
     
 private:
     typedef struct {
-        long value;
+        double value;
         long time;
     } Entry;
     

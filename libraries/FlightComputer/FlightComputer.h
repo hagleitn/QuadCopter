@@ -3,10 +3,11 @@
 
 #include <WProgram.h>
 #include <QuadCopter.h>
-#include <DistanceListener.h>
+#include <AutoControl.h>
+#include <SignalListener.h>
 #include <RemoteControl.h>
 
-class FlightComputer : public DistanceListener {
+class FlightComputer : public SignalListener {
 public:
     
     FlightComputer(QuadCopter& ufo, RemoteControl &rc) : ufo(ufo), rc(rc), height(0), speed(0), time(0), lastTime(0), 
@@ -17,7 +18,7 @@ public:
     void hover(int);
     void land();
     void abort();
-    void update(long, long, long);
+    void update(double);
     void adjust();
     
 private:

@@ -28,7 +28,7 @@ void MedianMeasurement::swap(Entry **m, int i, int j) {
 }
 
 int MedianMeasurement::partition(Entry **m, int left, int right, int pivot) {
-    long pivotValue = m[pivot]->value;
+    double pivotValue = m[pivot]->value;
     swap(m,pivot,right);
     int store = left;
     for (int i = left; i < right; ++i) {
@@ -57,7 +57,7 @@ int MedianMeasurement::select(Entry **m, int left, int right, int k) {
     }
 }
 
-bool MedianMeasurement::getMedian(long& median, long &time) {
+bool MedianMeasurement::getMedian(double& median, long &time) {
     if (cur == size) {
         int i = select(measurements,0,size-1,size/2+1);
 	// Serial.print("median index: ");
@@ -79,11 +79,11 @@ bool MedianMeasurement::getMedian(long& median, long &time) {
     return false;
 }
 
-void MedianMeasurement::pushMeasurement(long value) {
+void MedianMeasurement::pushMeasurement(double value) {
     pushMeasurement(value,millis());
 }
 
-void MedianMeasurement::pushMeasurement(long value, long time) {
+void MedianMeasurement::pushMeasurement(double value, long time) {
     buffer->values[buffer->index].value = value;
     buffer->values[buffer->index].time = time;
 

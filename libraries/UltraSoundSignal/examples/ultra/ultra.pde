@@ -1,17 +1,13 @@
 #include <Memory.h>
 #include <MedianMeasurement.h>
-#include <DistanceListener.h>
+#include <SignalListener.h>
 #include <UltraSoundSignal.h>
 
-class DummyListener : public DistanceListener {
+class DummyListener : public SignalListener {
 public:
-    virtual void update(long x, long v, long time) {
+    virtual void update(double x) {
         Serial.print("Location: ");
-        Serial.print(x);
-        Serial.print(" Speed: ");
-        Serial.print(v);
-        Serial.print(" Time: ");
-        Serial.println(time);
+        Serial.println(x);
     }
 };
 

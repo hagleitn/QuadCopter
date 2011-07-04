@@ -8,9 +8,10 @@
 #include <FlightComputer.h>
 #include <FlightComputerCommandParser.h>
 #include <MedianMeasurement.h>
-#include <DistanceListener.h>
+#include <SignalListener.h>
 #include <UltraSoundSignal.h>
 #include <RemoteControl.h>
+#include <AutoControl.h>
 
 int aileronOut = 12; //White 
 int rudderOut = 9; //Yellow 

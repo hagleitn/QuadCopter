@@ -27,10 +27,9 @@ void FlightComputer::abort() {
 }
 
 // receive height, speed
-void FlightComputer::update(long height, long speed, long time) {
+void FlightComputer::update(double height) {
     this->height = height;
-    this->speed = speed;
-    this->time = time;
+    this->time = millis();
     if (time - lastTime > 1000) {
         Serial.print("height: ");
         Serial.print(this->height);
@@ -38,7 +37,7 @@ void FlightComputer::update(long height, long speed, long time) {
         Serial.print(this->speed);
         Serial.print(" time: ");
         Serial.println(this->time);
-	lastTime = time;
+        lastTime = time;
     }
 }
 

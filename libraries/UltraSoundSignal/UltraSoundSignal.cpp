@@ -21,7 +21,7 @@ bool UltraSoundSignal::read() {
     duration = pulseIn(pin, HIGH);
     
     // convert the time into a distance
-    int newDistance = centimeters(duration);
+    double newDistance = centimeters(duration);
 
     // Serial.print("raw distance: ");
     // Serial.println(newDistance);
@@ -53,7 +53,7 @@ bool UltraSoundSignal::read() {
     return success;
 }
 
-long UltraSoundSignal::centimeters(long microseconds)
+double UltraSoundSignal::centimeters(long microseconds)
 {
     // The speed of sound is 340 m/s or 29 microseconds per centimeter.
     // The ping travels out and back, so to find the distance of the
@@ -61,7 +61,7 @@ long UltraSoundSignal::centimeters(long microseconds)
     return microseconds / 29 / 2;
 }
 
-void UltraSoundSignal::registerListener(DistanceListener *listener) {
+void UltraSoundSignal::registerListener(SignalListener *listener) {
     this->listener = listener;
 }
 
@@ -78,7 +78,7 @@ bool UltraSoundSignal::computeSpeed() {
       
         return false;
     }
-    speed = (long)(((float)(distance[newest] - distance[oldest])) / (((float)(time[newest] - time[oldest])) / 1000));
+    speed = ((distance[newest] - distance[oldest])) / (((double)(time[newest] - time[oldest])) / 1000);
     return true;
 }
 
@@ -87,7 +87,7 @@ void UltraSoundSignal::signal() {
         if (computeSpeed()) {
 	    // Serial.println("sending update...");
             int newest = (size+index-1)%size;
-            listener->update(distance[newest],speed,time[newest]);
+            listener->update(distance[newest]);
         }
     }
 }
