@@ -5,7 +5,7 @@
 
 class SignalListener {
 public:
-    virtual void update(double x) = 0;
+    virtual void update(double x, long time) = 0;
 };
 
 #endif

@@ -1,5 +1,13 @@
 #include <UltraSoundSignal.h>
 
+void UltraSoundSignal::init() {
+    median.init();
+    listener = (SignalListener**) malloc(sizeof(SignalListener*)*listenerSize);
+    for (int i = 0; i < listenerSize; ++i) {
+        listener[i] = 0;
+    }
+};
+
 bool UltraSoundSignal::read() {
     // establish variables for duration of the ping, 
     // and the distance result in inches and centimeters:
@@ -35,20 +43,20 @@ bool UltraSoundSignal::read() {
     median.pushMeasurement(newDistance);
     bool success = median.getMedian(distance[index],time[index]);
     if (success) {
-        //        Serial.print("median distance: (index: ");
-        //	Serial.print(index);
-        //        Serial.print(") ");
-        //        Serial.println(distance[index]);
+        //  Serial.print("median distance: (index: ");
+        //  Serial.print(index);
+        //  Serial.print(") ");
+        //  Serial.println(distance[index]);
 
-	//	  Serial.print("INDEX: ");
-	//	  Serial.print(index);
-	//	  Serial.print(", ");
+        //	Serial.print("INDEX: ");
+        //	Serial.print(index);
+        //	Serial.print(", ");
         ++index;
         if (index >= size) {
             full = true;
             index %= size;
         }
-	//	  Serial.println(index);
+        //	Serial.println(index);
     }
     return success;
 }
@@ -62,10 +70,19 @@ double UltraSoundSignal::centimeters(long microseconds)
 }
 
 void UltraSoundSignal::registerListener(SignalListener *listener) {
-    this->listener = listener;
+    int index = -1;
+    for (int i = 0; i < listenerSize; ++i) {
+        if (this->listener[i] == 0) {
+            index = i;
+            break;
+        }
+    }
+    if (index > 0) {
+        this->listener[index] = listener;
+    }
 }
 
-bool UltraSoundSignal::computeSpeed() {
+/*bool UltraSoundSignal::computeSpeed() {
     int oldest = index;
     int newest = (size+index-1)%size;
     if (!full || distance[oldest] == -1 || distance[newest] == -1 || (time[newest] - time[oldest]) < MIN_TIME_FOR_SPEED) {
@@ -80,14 +97,18 @@ bool UltraSoundSignal::computeSpeed() {
     }
     speed = ((distance[newest] - distance[oldest])) / (((double)(time[newest] - time[oldest])) / 1000);
     return true;
-}
+}*/
 
 void UltraSoundSignal::signal() {
     if (read()) {
-        if (computeSpeed()) {
+        // if (computeSpeed()) {
 	    // Serial.println("sending update...");
-            int newest = (size+index-1)%size;
-            listener->update(distance[newest]);
+        int newest = (size+index-1)%size;
+        for (int i = 0; i < listenerSize; ++i) {
+            if (listener[i] != 0) {
+                listener[i]->update(distance[newest],time[newest]);
+            }
         }
+        //}
     }
 }

@@ -6,6 +6,7 @@ RemoteControl::RemoteControl(QuadCopter& ufo, int aileronPin, int rudderPin, int
     pins[2] = throttlePin;   // Orange 
     pins[3] = rudderPin;     // Yellow 
     this->gainPin = gainPin; // Green (Gain/Gear) 
+    controlMask = 0xff; // control everything
 }
     
 void RemoteControl::init() {
@@ -16,9 +17,17 @@ void RemoteControl::init() {
 }
 
 void RemoteControl::update() {
+    if (controlMask == 0xff || isEngaged()) {
+        controlMask = 0xff;
+    }
+    
+    char mask = 0x01;
     for (int i = 0; i < QuadCopter::DEGREES_OF_FREEDOM; ++i) {
-        int value = pulseIn(pins[i],HIGH);
-        ufo.writeRaw((QuadCopter::Direction)i,value);
+        if (controlMask & mask) {
+            int value = pulseIn(pins[i],HIGH);
+            ufo.writeRaw((QuadCopter::Direction)i,value);
+        }
+        mask << 1;
     }
 }
 

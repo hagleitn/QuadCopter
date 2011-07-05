@@ -21,41 +21,35 @@ int gainOut = 8;  //Green (Gain/Gear)
 
 int aileronIn = 1; //White 
 int rudderIn = 4; //Yellow 
-int throttleIn = 5;  //Orange 
+int throttleIn = 5; //Orange 
 int elevatorIn = 6; //Red 
 int gainIn = 7;  //Green (Gain/Gear)
 
 int killPin = 3; // LOW kills the flight
 int pingPin = 2; // ultrasound sensor
 
-HardwareReader reader(Serial);
-QuadCopter ufo(aileronOut, rudderOut, throttleOut, elevatorOut, gainOut);
-UltraSoundSignal distance(pingPin);
-RemoteControl rc(ufo,aileronIn, rudderIn, throttleIn, elevatorIn, gainIn);
-FlightComputer computer(ufo,rc);
-FlightComputerCommandParser parser(computer);
-SerialController controller(parser, killPin, reader);
+int controlMask = ~(0x01 << 2); // control all inputs but throttle
 
-int minTime = 100;
-long lastTime = 0;
-long time = 0;
+QuadCopter ufo(aileronOut, rudderOut, throttleOut, elevatorOut, gainOut); // the flying machine
+RemoteControl rc(ufo,aileronIn, rudderIn, throttleIn, elevatorIn, gainIn); // receives rc input for manual override
+UltraSoundSignal distance(pingPin, 2); // height information
+FlightComputer computer(ufo,rc,distance); // the auto pilot
+
+HardwareReader reader(Serial); // reading commands (take off, land...) from Serial port
+FlightComputerCommandParser parser(computer); // the commands
+SerialController controller(parser, killPin, reader); // drives the command processing
 
 void setup() {
     Serial.begin(9600);
     ufo.init();
     rc.init();
+    rc.setControlMask(controlMask);
+    distance.init();
     computer.init();
     controller.init();
-    distance.init();
-    distance.registerListener(&computer);
 }
 
 void loop() {
-    time = millis();
     controller.executeCommand();
-    if (time - lastTime > minTime) {
-        distance.signal();
-        lastTime = time;
-    }
     computer.adjust();
 }

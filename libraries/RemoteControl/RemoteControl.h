@@ -11,15 +11,17 @@ public:
     ~RemoteControl() {}
     void init();
     void update();
-    bool isEngaged();
+    void setControlMask(char mask) { controlMask = mask; }
     
 private:
     
-    static const int THROTTLE_MIN = 100;
-    
+    static const int THROTTLE_MIN = 100; // min raw value from pulse in to take over
+    char controlMask; // all set bits mean manual control for the particular servo
     int pins[QuadCopter::DEGREES_OF_FREEDOM];
     int gainPin;
-    QuadCopter &ufo;    
+    QuadCopter &ufo;
+    
+    bool isEngaged();
 };
 
 #endif

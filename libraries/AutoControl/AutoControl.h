@@ -8,26 +8,30 @@
 class AutoControl : public SignalListener{
     
 public:
-    AutoControl(ControlListener &control, 
-                double proportional, 
-                double integral, 
-                double derivative, 
-                double minCummulative, 
-                double maxCummulative,
-                double initialGoal) : 
-                control(control), 
-                proportional(proportional), 
-                integral(integral), 
-                derivative(derivative),
+    
+    typedef double Configuration[5];
+        
+    AutoControl(ControlListener &control) :
+                control(control),
+                proportional(0),
+                integral(0),
+                derivative(0),
+                minCummulative(0),
+                maxCummulative(0),
                 lastValue(0),
+                lastError(0),
+                lastTime(0),
+                isFirst(true),
                 cummulativeError(0),
-                minCummulative(minCummulative), 
-                maxCummulative(maxCummulative),
-                goal(initialGoal) {};
+                goal(0),
+                engaged(false) {};
+    
     ~AutoControl(){};
     void init() {};
     
-    virtual void update(double x);
+    virtual void update(double x, long time);
+    
+    void setConfiguration(const Configuration &conf);
     
     double getProportional() { return proportional; }
     void setProportional(double proportional) { this->proportional = proportional; }
@@ -45,7 +49,10 @@ public:
     void setMinCummulative(double min) { this->minCummulative = min; }
     
     double getGoal() { return goal; }
-    void setGoal(double goal) { this->goal = goal; cummulativeError = 0; lastValue = 0; }
+    void setGoal(double goal) { this->goal = goal; isFirst = true; }
+    
+    void engage(bool engaged) { this->engaged = engaged; }
+    bool isEngaged() { return engaged; }
     
 private:
     
@@ -54,10 +61,14 @@ private:
     double integral;
     double derivative;
     double lastValue;
+    double lastError;
+    double lastTime;
     double cummulativeError;
     double maxCummulative;
     double minCummulative;
     double goal;
+    bool engaged;
+    bool isFirst;
 };
 
 #endif
