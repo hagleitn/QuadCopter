@@ -1,7 +1,7 @@
 #include <FlightComputer.h>
 
-const AutoControl::Configuration FlightComputer::HOVER_CONF   = { 0.05, 0.05, 0.1, -1000, 1000 };
-const AutoControl::Configuration FlightComputer::LANDING_CONF = { 0.01, 0.005, 1, -1000, 1000 };
+const AutoControl::Configuration FlightComputer::HOVER_CONF   = { 0.05, 0.05,  0.1, -1000, 1000 };
+const AutoControl::Configuration FlightComputer::LANDING_CONF = { 0.01, 0.005, 1,   -1000, 1000 };
 
 void FlightComputer::init() {
     ultraSound.registerListener(&heightListener); 
@@ -52,6 +52,19 @@ void FlightComputer::abort() {
     ufo.throttle(QuadCopter::MIN_SPEED);
 }
 
+void FlightComputer::log() {
+    Serial.print("state: ");
+    Serial.print(state);
+    Serial.print(", time: ");
+    Serial.print(time);
+    Serial.print(", height: ");
+    Serial.print(height);
+    Serial.print(", zero height: ");
+    Serial.print(zeroHeight);
+    Serial.print(", throttle: ");
+    Serial.println(throttleControl.currentThrottle);
+}
+
 void FlightComputer::adjust() {
     time = millis();
     
@@ -96,8 +109,13 @@ void FlightComputer::adjust() {
         }
     }
     
-    if (time - lastTime > MIN_TIME_ULTRA_SOUND) {
+    if (time - lastTimeSignal > MIN_TIME_ULTRA_SOUND) {
         ultraSound.signal();
-        lastTime = time;
+        lastTimeSignal = time;
+    }
+    
+    if (time -lastTimeLog > MIN_TIME_STATUS_MESSAGE) {
+        log();
+        lastTimeLog = time;
     }
 }

@@ -4,10 +4,8 @@
 void SerialController::executeCommand() {
     int valueKillPin = digitalRead(killPin);
     if (valueKillPin != lastValueKillPin) {
-        Serial.println("Kill pin changed: ");
-        Serial.println(valueKillPin);
         parser.fail();
-	lastValueKillPin = valueKillPin;
+        lastValueKillPin = valueKillPin;
     }
     
     if (startSleep != 0) {

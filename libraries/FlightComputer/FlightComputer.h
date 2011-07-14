@@ -9,6 +9,7 @@
 #include <UltraSoundSignal.h>
 
 class FlightComputer {
+    
 public:
     
     // Flight computer states
@@ -20,6 +21,9 @@ public:
     
     // delay between readings of the ultra sound module
     static const int MIN_TIME_ULTRA_SOUND = 100;
+    
+    // delay between status messages
+    static const int MIN_TIME_STATUS_MESSAGE = 5000;
     
     // min/max for the automatic control of the throttle
     static const double MIN_THROTTLE = QuadCopter::MIN_SPEED/2;
@@ -33,7 +37,7 @@ public:
     
     FlightComputer(QuadCopter& ufo, RemoteControl &rc, UltraSoundSignal &ultraSound) : 
         ufo(ufo), rc(rc), ultraSound(ultraSound), throttleControl(ufo), heightListener(*this), autoThrottle(throttleControl), 
-        state(GROUND), height(0), zeroHeight(0), time(0), override(false) {};
+        state(GROUND), height(0), zeroHeight(0), time(0), lastTimeSignal(0), lastTimeLog(0) {};
     ~FlightComputer() {}
     
     void init();
@@ -44,6 +48,7 @@ public:
     void manualControl();
     void abort();
     void adjust();
+    void log();
     
 private:
     
@@ -85,9 +90,8 @@ private:
     double height;
     double zeroHeight;
     long time;
-    long lastTime;
-    bool override;
-    
+    long lastTimeSignal;
+    long lastTimeLog;
 };
 
 #endif
