@@ -34,6 +34,10 @@ void FlightComputer::land() {
     }
 }
 
+void FlightComputer::manualControl() {
+    autoThrottle.engage(false);
+}
+
 void FlightComputer::emergencyDescent() {
     if (FAILED != state && GROUND != state) {
         autoThrottle.engage(false);
@@ -53,6 +57,9 @@ void FlightComputer::adjust() {
     
     // allow for manual inputs first
     rc.update();
+    if (rc.getControlMask() == RemoteControl::FULL_MANUAL) {
+        manualControl();
+    }
     
     // no height signal from ultra sound try descending
     if (-1 == height) { 
@@ -78,6 +85,9 @@ void FlightComputer::adjust() {
                 // Let's just land.
                 autoThrottle.engage(true);
                 land();
+                break;
+            case MANUAL_CONTROL:
+                // nothing
                 break;
             default:
                 // this is bad

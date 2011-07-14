@@ -25,15 +25,20 @@ void AutoControl::update(double value, long time) {
         double iTotal = 0;
         double dTotal = 0;
         
-        double time_delta = (lastTime - time);
+        double timeDelta = (lastTime - time);
+        
+        if (timeDelta == 0) {
+            return;
+        }
+        
         double error = goal - value;
-        double error_delta = (error - lastError);
+        double errorDelta = (error - lastError);
      
         // simple adjustment proportional to the error
         pTotal = proportional * error;
         
         // reacts to the length of an error
-        cummulativeError += error * time_delta;
+        cummulativeError += error * timeDelta;
         if (cummulativeError > maxCummulative) {
             cummulativeError = maxCummulative;
         } else if (cummulativeError < minCummulative) {
@@ -42,7 +47,7 @@ void AutoControl::update(double value, long time) {
         iTotal = integral * cummulativeError;
         
         // adjustment to react to the closing speed
-        dTotal = derivative * (error_delta / time_delta);
+        dTotal = derivative * (errorDelta / timeDelta);
         
         lastValue = value;
         lastError = error;

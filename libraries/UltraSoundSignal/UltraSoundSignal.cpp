@@ -82,7 +82,8 @@ void UltraSoundSignal::registerListener(SignalListener *listener) {
     }
 }
 
-/*bool UltraSoundSignal::computeSpeed() {
+/*
+bool UltraSoundSignal::computeSpeed() {
     int oldest = index;
     int newest = (size+index-1)%size;
     if (!full || distance[oldest] == -1 || distance[newest] == -1 || (time[newest] - time[oldest]) < MIN_TIME_FOR_SPEED) {
@@ -97,7 +98,8 @@ void UltraSoundSignal::registerListener(SignalListener *listener) {
     }
     speed = ((distance[newest] - distance[oldest])) / (((double)(time[newest] - time[oldest])) / 1000);
     return true;
-}*/
+}
+*/
 
 void UltraSoundSignal::signal() {
     if (read()) {

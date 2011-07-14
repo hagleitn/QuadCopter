@@ -12,7 +12,7 @@ class FlightComputer {
 public:
     
     // Flight computer states
-    typedef enum {GROUND=0, HOVER, LANDING, FAILED, EMERGENCY_LANDING} State;
+    typedef enum {GROUND=0, HOVER, LANDING, FAILED, EMERGENCY_LANDING, MANUAL_CONTROL} State;
     
     // values for the PID controller
     static const AutoControl::Configuration HOVER_CONF;
@@ -41,6 +41,7 @@ public:
     void hover(long);
     void land();
     void emergencyDescent();
+    void manualControl();
     void abort();
     void adjust();
     
