@@ -2,7 +2,9 @@
 #include <FlightComputerCommandParser.h>
 
 void FlightComputerCommandParser::fail() {
-    computer.abort();
+    // aborting flight is too agressive - try emergency descent
+    Serial.println("Parser failure... emergency descent");
+    computer.emergencyDescent();
 }
 
 void FlightComputerCommandParser::doCmd(const char *cmd) {
@@ -31,17 +33,14 @@ void FlightComputerCommandParser::doCmd(const char *cmd) {
         case 'L':
             computer.land();
             break;
-			
+        
+        // Commands "S" and "X" stop the thing
         case 's':
         case 'S':
-            computer.abort();
-            break;
-			
-        // Command "X" stops the thing
         case 'x':
         case 'X':
         default:
-            fail();
+            computer.abort();
             break;
     }
 }

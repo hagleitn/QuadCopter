@@ -102,6 +102,9 @@ void FlightComputer::adjust() {
             case MANUAL_CONTROL:
                 // nothing
                 break;
+            case FAILED:
+                // nothing
+                break;
             default:
                 // this is bad
                 land();
