@@ -9,7 +9,7 @@ void AutoControl::setConfiguration(const Configuration &conf) {
 }
 
 void AutoControl::update(double value, long time) {
-        
+    
     if (engaged) {
         
         if (isFirst) {
@@ -25,9 +25,9 @@ void AutoControl::update(double value, long time) {
         double iTotal = 0;
         double dTotal = 0;
         
-        double timeDelta = (lastTime - time);
+        double timeDelta = time - lastTime;
         
-        if (timeDelta == 0) {
+        if (timeDelta <= 0) {
             return;
         }
         

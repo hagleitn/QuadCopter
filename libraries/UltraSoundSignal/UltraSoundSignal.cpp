@@ -77,7 +77,7 @@ void UltraSoundSignal::registerListener(SignalListener *listener) {
             break;
         }
     }
-    if (index > 0) {
+    if (index >= 0) {
         this->listener[index] = listener;
     }
 }

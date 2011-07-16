@@ -28,7 +28,7 @@ int gainIn = 7;  //Green (Gain/Gear)
 int killPin = 3; // LOW kills the flight
 int pingPin = 2; // ultrasound sensor
 
-int controlMask = ~(0x01 << 2); // control all inputs but throttle
+char controlMask = ~(0x01 << 2); // control all inputs but throttle
 
 QuadCopter ufo(aileronOut, rudderOut, throttleOut, elevatorOut, gainOut); // the flying machine
 RemoteControl rc(ufo,aileronIn, rudderIn, throttleIn, elevatorIn, gainIn); // receives rc input for manual override

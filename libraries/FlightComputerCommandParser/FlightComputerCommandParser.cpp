@@ -2,9 +2,8 @@
 #include <FlightComputerCommandParser.h>
 
 void FlightComputerCommandParser::fail() {
-    // aborting flight is too agressive - try emergency descent
-    Serial.println("Parser failure... emergency descent");
-    computer.emergencyDescent();
+    // aborting flight is too agressive - just ignore failures.
+    // computer.emergencyDescent();
 }
 
 void FlightComputerCommandParser::doCmd(const char *cmd) {
