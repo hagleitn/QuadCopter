@@ -10,6 +10,7 @@
 #include <MedianMeasurement.h>
 #include <SignalListener.h>
 #include <UltraSoundSignal.h>
+#include <AccelerometerSignal.h>
 #include <RemoteControl.h>
 #include <AutoControl.h>
 
@@ -19,21 +20,26 @@ int throttleOut = 10;  //Orange
 int elevatorOut = 11; //Red 
 int gainOut = 8;  //Green (Gain/Gear)
 
-int aileronIn = 1; //White 
+int aileronIn = 4; //White 
 int rudderIn = 4; //Yellow 
-int throttleIn = 5; //Orange 
-int elevatorIn = 6; //Red 
-int gainIn = 7;  //Green (Gain/Gear)
+int throttleIn = 4; //Orange 
+int elevatorIn = 4; //Red 
+int gainIn = 4;  //Green (Gain/Gear)
 
 int killPin = 3; // LOW kills the flight
 int pingPin = 2; // ultrasound sensor
+
+int longitudinalPin = 5;
+int lateralPin = 6;
 
 char controlMask = ~(0x01 << 2); // control all inputs but throttle
 
 QuadCopter ufo(aileronOut, rudderOut, throttleOut, elevatorOut, gainOut); // the flying machine
 RemoteControl rc(ufo,aileronIn, rudderIn, throttleIn, elevatorIn, gainIn); // receives rc input for manual override
 UltraSoundSignal distance(pingPin, 2); // height information
-FlightComputer computer(ufo,rc,distance); // the auto pilot
+AccelerometerSignal longitudinalAcceleration(longitudinalPin,2);
+AccelerometerSignal lateralAcceleration(lateralPin,2);
+FlightComputer computer(ufo,rc,distance,longitudinalAcceleration,lateralAcceleration); // the auto pilot
 
 HardwareReader reader(Serial); // reading commands (take off, land...) from Serial port
 FlightComputerCommandParser parser(computer); // the commands
@@ -45,6 +51,8 @@ void setup() {
     rc.init();
     rc.setControlMask(controlMask);
     distance.init();
+    longitudinalAcceleration.init();
+    lateralAcceleration.init();
     computer.init();
     controller.init();
 }

@@ -7,6 +7,7 @@
 #include <SignalListener.h>
 #include <RemoteControl.h>
 #include <UltraSoundSignal.h>
+#include <AccelerometerSignal.h>
 
 class FlightComputer {
     
@@ -18,9 +19,13 @@ public:
     // values for the PID controller
     static const AutoControl::Configuration HOVER_CONF;
     static const AutoControl::Configuration LANDING_CONF;
+    static const AutoControl::Configuration ACCEL_CONF;
     
     // delay between readings of the ultra sound module
     static const int MIN_TIME_ULTRA_SOUND = 100;
+    
+    // delay between readings of the accelerometers
+    static const int MIN_TIME_ACCEL = 50;
     
     // delay between status messages
     static const int MIN_TIME_STATUS_MESSAGE = 5000;
@@ -29,15 +34,17 @@ public:
     static const double MIN_THROTTLE = QuadCopter::MIN_SPEED/2;
     static const double MAX_THROTTLE = QuadCopter::MAX_SPEED/2;
     
+    // min/max for the automatic control of the aileron and elevator
+    static const double MIN_TILT = QuadCopter::MIN_SPEED/2;
+    static const double MAX_TILT = QuadCopter::MAX_SPEED/2;    
+    
     // landings will cut the power once this height is reached
     static const double THROTTLE_OFF_HEIGHT = 10;
     
     // throttle setting for when we don't know the height anymore
     static const int EMERGENCY_DESCENT = -20;
     
-    FlightComputer(QuadCopter& ufo, RemoteControl &rc, UltraSoundSignal &ultraSound) : 
-        ufo(ufo), rc(rc), ultraSound(ultraSound), throttleControl(ufo), heightListener(*this), autoThrottle(throttleControl), 
-        state(GROUND), height(0), zeroHeight(0), time(0), lastTimeSignal(0), lastTimeLog(0) {};
+    FlightComputer(QuadCopter&, RemoteControl&, UltraSoundSignal&, AccelerometerSignal&, AccelerometerSignal&);
     ~FlightComputer() {}
     
     void init();
@@ -48,6 +55,7 @@ public:
     void manualControl();
     void abort();
     void adjust();
+    void stabilize(bool);
     void log();
     
 private:
@@ -61,6 +69,26 @@ private:
         }
         FlightComputer &comp;
     };
+    
+    // Listener to update the longitudinal force on the flight computer
+    class LongitudinalListener : public SignalListener {
+    public:
+        LongitudinalListener(FlightComputer &comp) : comp(comp) {};
+        virtual void update(double x, long time) {
+            comp.longitudinalForce = x;
+        }
+        FlightComputer &comp;
+    };
+
+    // Listener to update the longitudinal force on the flight computer
+    class LateralListener : public SignalListener {
+    public:
+        LateralListener(FlightComputer &comp) : comp(comp) {};
+        virtual void update(double x, long time) {
+            comp.lateralForce = x;
+        }
+        FlightComputer &comp;
+    };    
     
     // adjusts output from PID controller for throttle setting
     class ThrottleControl : public ControlListener {
@@ -79,18 +107,73 @@ private:
         QuadCopter &ufo;
     };
     
-    QuadCopter &ufo;
-    RemoteControl &rc;
-    UltraSoundSignal &ultraSound;
-    ThrottleControl throttleControl;
-    HeightListener heightListener;
-    AutoControl autoThrottle;
+    // adjusts output from PID controller for elevator setting
+    class ElevatorControl : public ControlListener {
+    public:
+        ElevatorControl(QuadCopter &ufo) : ufo(ufo), currentElevator(QuadCopter::STOP_SPEED) {};
+        virtual void adjust(double x) {
+            currentElevator = x;
+            if (currentElevator > MAX_TILT) {
+                currentElevator = MAX_TILT;
+            } else if (currentElevator < MIN_TILT) {
+                currentElevator = MIN_TILT;
+            }            
+            ufo.elevator((int)currentElevator);
+        }
+        double currentElevator;
+        QuadCopter &ufo;
+    };
+
+    // adjusts output from PID controller for aileron setting
+    class AileronControl : public ControlListener {
+    public:
+        AileronControl(QuadCopter &ufo) : ufo(ufo), currentAileron(QuadCopter::STOP_SPEED) {};
+        virtual void adjust(double x) {
+            currentAileron = x;
+            if (currentAileron > MAX_TILT) {
+                currentAileron = MAX_TILT;
+            } else if (currentAileron < MIN_TILT) {
+                currentAileron = MIN_TILT;
+            }                        
+            ufo.aileron((int)currentAileron);
+        }
+        double currentAileron;
+        QuadCopter &ufo;
+    };
+    
+    QuadCopter &ufo; // quad copter
+    RemoteControl &rc; // RC signal (from RC controller)
+    
+    UltraSoundSignal &ultraSound; // distance pointing down
+    AccelerometerSignal &longitudinalAccel; // accel on y axis
+    AccelerometerSignal &lateralAccel; // accel on x axis
+    
+    ThrottleControl throttleControl; // sets the throttle
+    ElevatorControl elevatorControl; // sets the elevator
+    AileronControl aileronControl; // sets the aileron
+    
+    HeightListener heightListener; // updates height of computer
+    LateralListener lateralListener; // updates forward force of the computer
+    LongitudinalListener longitudinalListener; // updates sideways force of the computer
+    
+    AutoControl autoThrottle; // autopilot for throttle
+    AutoControl autoElevator; // autopilot for elevator
+    AutoControl autoAileron; // autopilot for aileron
     
     State state;
+    
     double height;
     double zeroHeight;
+    
+    double longitudinalForce;
+    double zeroLongitudinalForce;
+    
+    double lateralForce;
+    double zeroLateralForce;
+    
     long time;
-    long lastTimeSignal;
+    long lastTimeHeightSignal;
+    long lastTimeAccelSignal;
     long lastTimeLog;
 };
 

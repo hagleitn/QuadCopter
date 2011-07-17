@@ -24,8 +24,8 @@
  */
 
 // these constants won't change:
-const int xPin = 2;     // X output of the accelerometer
-const int yPin = 3;     // Y output of the accelerometer
+const int xPin = 5;     // X output of the accelerometer
+const int yPin = 6;     // Y output of the accelerometer
 const int tPin = 0;     // Y output of the accelerometer
 
 void setup() {
@@ -55,9 +55,9 @@ void loop() {
   accelerationY = ((pulseY / 10) - 500) * 8;
 
   // print the acceleration
-  Serial.print(pulseT);
+  // Serial.print(pulseT);
   // print a tab character:
-  Serial.print("\t");
+  // Serial.print("\t");
   // print the acceleration
   Serial.print(accelerationX);
   // print a tab character:
