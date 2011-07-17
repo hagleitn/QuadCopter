@@ -106,6 +106,8 @@ void FlightComputer::stabilize(bool engage) {
     
     autoElevator.setConfiguration(ACCEL_CONF);
     autoAileron.setConfiguration(ACCEL_CONF);
+    autoElevator.setGoal(zeroLongitudinalForce);
+    autoAileron.setGoal(zeroLateralForce);
     autoElevator.engage(engage);
     autoAileron.engage(engage);
 }
