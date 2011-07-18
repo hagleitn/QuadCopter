@@ -36,7 +36,12 @@ FlightComputer::FlightComputer(
     lastTimeHeightSignal(0),
     lastTimeAccelSignal(0),
     lastTimeLog(0)
-{};
+{
+    // set initial values to static conf arrays
+    setHoverConfiguration(HOVER_CONF);
+    setLandingConfiguration(LANDING_CONF);
+    setStabilizerConfiguration(ACCEL_CONF);
+};
 
 void FlightComputer::init() {
     ultraSound.registerListener(&heightListener); 
@@ -47,10 +52,28 @@ void FlightComputer::init() {
     lateralAccel.registerListener(&autoAileron);
 }
 
+void FlightComputer::setHoverConfiguration(const AutoControl::Configuration &conf) {
+    for (int i = 0; i < sizeof(AutoControl::Configuration)/sizeof(double); ++i) {
+        hoverConf[i] = conf[i];
+    }
+}
+
+void FlightComputer::setLandingConfiguration(const AutoControl::Configuration &conf) {
+    for (int i = 0; i < sizeof(AutoControl::Configuration)/sizeof(double); ++i) {
+        landingConf[i] = conf[i];
+    }    
+}
+
+void FlightComputer::setStabilizerConfiguration(const AutoControl::Configuration &conf) {
+    for (int i = 0; i < sizeof(AutoControl::Configuration)/sizeof(double); ++i) {
+        accelConf[i] = conf[i];
+    }
+}
+
 void FlightComputer::takeoff(long centimeters) {
     if (state == GROUND) {
         state = HOVER;
-        autoThrottle.setConfiguration(HOVER_CONF);
+        autoThrottle.setConfiguration(hoverConf);
         autoThrottle.setGoal(centimeters);
         autoThrottle.engage(true);
     }
@@ -59,7 +82,7 @@ void FlightComputer::takeoff(long centimeters) {
 void FlightComputer::hover(long centimeters) {
     if (state == HOVER || state == LANDING) {
         state = HOVER;
-        autoThrottle.setConfiguration(HOVER_CONF);
+        autoThrottle.setConfiguration(hoverConf);
         autoThrottle.setGoal(centimeters);
     }
 }
@@ -68,7 +91,7 @@ void FlightComputer::land() {
     if (state == HOVER || state == EMERGENCY_LANDING) {
         state = LANDING;
         autoThrottle.setGoal(zeroHeight);
-        autoThrottle.setConfiguration(LANDING_CONF);
+        autoThrottle.setConfiguration(landingConf);
         autoThrottle.engage(true);
     }
 }
@@ -82,6 +105,7 @@ void FlightComputer::emergencyDescent() {
     if (FAILED != state && GROUND != state) {
         autoThrottle.engage(false);
         ufo.throttle(EMERGENCY_DESCENT);
+        throttleControl.currentThrottle = EMERGENCY_DESCENT;
         state = EMERGENCY_LANDING;
     }
 }
@@ -91,6 +115,7 @@ void FlightComputer::abort() {
     autoThrottle.engage(false);
     stabilize(false);
     ufo.throttle(QuadCopter::MIN_SPEED);
+    throttleControl.currentThrottle = QuadCopter::MIN_SPEED;
 }
 
 void FlightComputer::stabilize(bool engage) {
@@ -101,11 +126,13 @@ void FlightComputer::stabilize(bool engage) {
         controlMask = controlMask & ~mask;
     } else {
         controlMask = controlMask | mask;
+        elevatorControl.currentElevator = QuadCopter::STOP_SPEED;
+        aileronControl.currentAileron = QuadCopter::STOP_SPEED;
     }
     rc.setControlMask(controlMask);
     
-    autoElevator.setConfiguration(ACCEL_CONF);
-    autoAileron.setConfiguration(ACCEL_CONF);
+    autoElevator.setConfiguration(accelConf);
+    autoAileron.setConfiguration(accelConf);
     autoElevator.setGoal(zeroLongitudinalForce);
     autoAileron.setGoal(zeroLateralForce);
     autoElevator.engage(engage);
@@ -167,6 +194,7 @@ void FlightComputer::adjust() {
                     state = GROUND;
                     autoThrottle.engage(false);
                     ufo.throttle(QuadCopter::MIN_SPEED);
+                    throttleControl.currentThrottle = QuadCopter::MIN_SPEED;
                 }
                 break;
             case EMERGENCY_LANDING:

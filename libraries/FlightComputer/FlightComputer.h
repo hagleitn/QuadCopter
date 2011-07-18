@@ -13,14 +13,14 @@ class FlightComputer {
     
 public:
     
-    // Flight computer states
-    typedef enum {GROUND=0, HOVER, LANDING, FAILED, EMERGENCY_LANDING, MANUAL_CONTROL} State;
-    
     // values for the PID controller
     static const AutoControl::Configuration HOVER_CONF;
     static const AutoControl::Configuration LANDING_CONF;
-    static const AutoControl::Configuration ACCEL_CONF;
+    static const AutoControl::Configuration ACCEL_CONF;    
     
+    // Flight computer states
+    typedef enum {GROUND=0, HOVER, LANDING, FAILED, EMERGENCY_LANDING, MANUAL_CONTROL} State;
+        
     // delay between readings of the ultra sound module
     static const int MIN_TIME_ULTRA_SOUND = 100;
     
@@ -57,8 +57,15 @@ public:
     void adjust();
     void stabilize(bool);
     void log();
+    void setHoverConfiguration(const AutoControl::Configuration &conf);
+    void setLandingConfiguration(const AutoControl::Configuration &conf);
+    void setStabilizerConfiguration(const AutoControl::Configuration &conf);
     
 private:
+    // values for the PID controller
+    AutoControl::Configuration hoverConf;
+    AutoControl::Configuration landingConf;
+    AutoControl::Configuration accelConf;
     
     // Listener to update the height of the flight computer
     class HeightListener : public SignalListener {

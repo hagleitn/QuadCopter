@@ -1,5 +1,6 @@
 #include <FlightComputer.h>
 #include <FlightComputerCommandParser.h>
+#include <AutoControl.h>
 
 void FlightComputerCommandParser::fail() {
     // aborting flight is too agressive - just ignore failures.
@@ -31,6 +32,43 @@ void FlightComputerCommandParser::doCmd(const char *cmd) {
         case 'l':
         case 'L':
             computer.land();
+            break;
+        
+        case 'C':
+        case 'c':
+            {
+                int type;
+                
+                double proportional;
+                double integral;
+                double derivative;
+                double min;
+                double max;
+                char *p = const_cast<char*>(cmd) + 2;
+                
+                type = strtol(p,&p,10);
+                proportional = strtod(p,&p);
+                integral = strtod(p,&p);
+                derivative = strtod(p,&p);
+                min = strtod(p,&p);
+                max = strtod(p,&p);
+                
+                AutoControl::Configuration conf = {proportional,integral,derivative,min,max};
+                switch (type) {
+                    case 1:
+                        computer.setHoverConfiguration(conf);
+                        break;
+                    case 2:
+                        computer.setLandingConfiguration(conf);
+                        break;
+                    case 3:
+                        computer.setStabilizerConfiguration(conf);
+                        break;
+                    default:
+                        fail();
+                        break;
+                }
+            }
             break;
             
         // Command "S" turns on/off stabilization

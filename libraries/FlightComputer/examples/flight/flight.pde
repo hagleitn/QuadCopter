@@ -8,6 +8,7 @@
 #include <FlightComputer.h>
 #include <FlightComputerCommandParser.h>
 #include <MedianMeasurement.h>
+#include <Signal.h>
 #include <SignalListener.h>
 #include <UltraSoundSignal.h>
 #include <AccelerometerSignal.h>

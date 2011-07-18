@@ -1,5 +1,6 @@
 #include <Memory.h>
 #include <MedianMeasurement.h>
+#include <Signal.h>
 #include <SignalListener.h>
 #include <AccelerometerSignal.h>
 
