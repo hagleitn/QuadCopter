@@ -60,19 +60,9 @@ int MedianMeasurement::select(Entry **m, int left, int right, int k) {
 bool MedianMeasurement::getMedian(double& median, long &time) {
     if (cur == size) {
         int i = select(measurements,0,size-1,size/2+1);
-	// Serial.print("median index: ");
-	// Serial.println(i);
 
         median = measurements[i]->value;
         time = measurements[i]->time;
-
-	// Serial.print("(median: ");
-	// Serial.print(median);
-	// Serial.println(")");
-
-	// Serial.print("(Time: ");
-	// Serial.print(time);
-	// Serial.println(")");
 
         return true;
     }
@@ -86,18 +76,6 @@ void MedianMeasurement::pushMeasurement(double value) {
 void MedianMeasurement::pushMeasurement(double value, long time) {
     buffer->values[buffer->index].value = value;
     buffer->values[buffer->index].time = time;
-
-    // Serial.print("Time: ");
-    // Serial.println(time);
-
-    /*Serial.print("Measurements: (index = ");
-    Serial.print(buffer->index);
-    Serial.print("): ");
-    for (int i = 0; i < size; ++i) {
-        Serial.print(" ");
-	Serial.print(measurements[i]->value);
-    }
-    Serial.println("");*/
 
     buffer->index = (buffer->index+1)%size;
 

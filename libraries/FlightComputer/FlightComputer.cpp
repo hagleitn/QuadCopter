@@ -173,7 +173,7 @@ void FlightComputer::adjust() {
     if (rc.getControlMask() == RemoteControl::FULL_MANUAL) {
         manualControl();
     }
-    
+
     // no height signal from ultra sound try descending
     if (-1 == height) { 
         emergencyDescent();

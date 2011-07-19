@@ -32,6 +32,7 @@ int pingPin = 2; // ultrasound sensor
 
 int longitudinalPin = 5;
 int lateralPin = 6;
+long time = 0;
 
 char controlMask = ~(0x01 << 2); // control all inputs but throttle
 

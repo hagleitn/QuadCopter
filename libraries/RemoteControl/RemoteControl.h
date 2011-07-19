@@ -12,6 +12,7 @@ public:
     static const char AILERON_MASK   = 0x02;
     static const char THROTTLE_MASK  = 0x03;
     static const char RUDDER_MASK    = 0x04;
+    static const int  TIMEOUT        = 20000;
     
     RemoteControl(QuadCopter& ufo, int aileronPin, int rudderPin, int throttlePin, int elevatorPin, int gainPin);
     ~RemoteControl() {}

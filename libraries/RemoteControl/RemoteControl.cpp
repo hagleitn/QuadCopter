@@ -20,11 +20,11 @@ void RemoteControl::update() {
     if (controlMask == FULL_MANUAL || isEngaged()) {
         controlMask = FULL_MANUAL;
     }
-    
+
     char mask = 0x01;
     for (int i = 0; i < QuadCopter::DEGREES_OF_FREEDOM; ++i) {
         if (controlMask & mask) {
-            int value = pulseIn(pins[i],HIGH);
+            int value = pulseIn(pins[i],HIGH,TIMEOUT);
             ufo.writeRaw((QuadCopter::Direction)i,value);
         }
         mask << 1;
@@ -33,6 +33,6 @@ void RemoteControl::update() {
 
 bool RemoteControl::isEngaged() {
     int vertical = ufo.readRaw(QuadCopter::VERTICAL);
-    int value = pulseIn(pins[QuadCopter::VERTICAL],HIGH);
+    int value = pulseIn(pins[QuadCopter::VERTICAL],HIGH,TIMEOUT);
     return value > THROTTLE_MIN && value > vertical;
 }
