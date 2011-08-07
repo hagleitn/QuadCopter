@@ -143,7 +143,9 @@ void FlightComputer::log() {
     Serial.print("state: ");
     Serial.print(state);
     Serial.print(", time: ");
-    Serial.println(time);
+    Serial.print(time);
+    Serial.print(", mask: ");
+    Serial.println((byte)rc.getControlMask(),BIN);
     Serial.print("height: ");
     Serial.print(height);
     Serial.print(", zero height: ");
