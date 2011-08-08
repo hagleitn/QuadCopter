@@ -140,31 +140,25 @@ void FlightComputer::stabilize(bool engage) {
 }
 
 void FlightComputer::log() {
-    Serial.print("state: ");
+    Serial.print("st: ");
     Serial.print(state);
-    Serial.print(", time: ");
+    Serial.print(", ms: ");
     Serial.print(time);
-    Serial.print(", mask: ");
+    Serial.print(", rc: ");
     Serial.println((byte)rc.getControlMask(),BIN);
-    Serial.print("height: ");
-    Serial.print(height);
-    Serial.print(", zero height: ");
-    Serial.print(zeroHeight);
-    Serial.print(", throttle: ");
-    Serial.println(throttleControl.currentThrottle);
-    Serial.print("forward force: ");
-    Serial.print(longitudinalForce);
-    Serial.print(", zero force: ");
-    Serial.print(zeroLongitudinalForce);
-    Serial.print(", elevator: ");
-    Serial.println(elevatorControl.currentElevator);
-    Serial.print("side force: ");
-    Serial.print(lateralForce);
-    Serial.print(", zero force: ");
-    Serial.print(zeroLateralForce);
-    Serial.print(", aileron: ");
+    Serial.print("h: ");
+    Serial.print(height-zeroHeight);
+    Serial.print(", y'': ");
+    Serial.print(longitudinalForce-zeroLongitudinalForce);
+    Serial.print(", x'': ");
+    Serial.println(lateralForce-zeroLateralForce);
+    Serial.print("t: ");
+    Serial.print(throttleControl.currentThrottle);
+    Serial.print(", e: ");
+    Serial.print(elevatorControl.currentElevator);
+    Serial.print(", a: ");
     Serial.println(aileronControl.currentAileron);
-    Serial.println("");
+    Serial.println();
 }
 
 void FlightComputer::adjust() {

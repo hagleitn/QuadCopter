@@ -17,7 +17,7 @@
 
 int aileronOut =        12; //White 
 int rudderOut =         13; //Yellow 
-int throttleOut =       10;  //Orange 
+int throttleOut =       10; //Orange 
 int elevatorOut =       11; //Red 
 int gainOut =           9;  //Green (Gain/Gear)
 
@@ -25,13 +25,12 @@ int aileronIn =         4; //White
 int rudderIn =          2; //Yellow 
 int throttleIn =        5; //Orange 
 int elevatorIn =        3; //Red 
-int gainIn =            9;  //Green (Gain/Gear)
+int gainIn =            9; //Green (Gain/Gear)
 
-int killPin =           9; // LOW kills the flight
 int pingPin =           8; // ultrasound sensor
 
-int longitudinalPin =   6;
-int lateralPin =        7;
+int longitudinalPin =   6; // tilt sensor long axis
+int lateralPin =        7; // tilt sensor lat axis
 long time = 0;
 
 char controlMask = ~(0x01 << 2); // control all inputs but throttle
@@ -39,13 +38,13 @@ char controlMask = ~(0x01 << 2); // control all inputs but throttle
 QuadCopter ufo(aileronOut, rudderOut, throttleOut, elevatorOut, gainOut); // the flying machine
 RemoteControl rc(ufo,aileronIn, rudderIn, throttleIn, elevatorIn, gainIn); // receives rc input for manual override
 UltraSoundSignal distance(pingPin, 2); // height information
-AccelerometerSignal longitudinalAcceleration(longitudinalPin,2);
-AccelerometerSignal lateralAcceleration(lateralPin,2);
-FlightComputer computer(ufo,rc,distance,longitudinalAcceleration,lateralAcceleration); // the auto pilot
+AccelerometerSignal longitudinalAcceleration(longitudinalPin, 2);
+AccelerometerSignal lateralAcceleration(lateralPin, 2);
+FlightComputer computer(ufo, rc, distance, longitudinalAcceleration, lateralAcceleration); // the auto pilot
 
 HardwareReader reader(Serial); // reading commands (take off, land...) from Serial port
 FlightComputerCommandParser parser(computer); // the commands
-SerialController controller(parser, killPin, reader); // drives the command processing
+SerialController controller(parser, reader); // drives the command processing
 
 void setup() {
     Serial.begin(9600);

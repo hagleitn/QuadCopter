@@ -2,12 +2,6 @@
 #include <CommandParser.h>
 
 void SerialController::executeCommand() {
-    int valueKillPin = digitalRead(killPin);
-    if (valueKillPin != lastValueKillPin) {
-        parser.fail();
-        lastValueKillPin = valueKillPin;
-    }
-    
     if (startSleep != 0) {
         if (millis()-startSleep < sleepTime) {
             return;

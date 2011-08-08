@@ -18,8 +18,6 @@ double UltraSoundSignal::convert(long microseconds)
     // object we take half of the distance travelled.
     double newDistance = microseconds / 29 / 2;
     if (newDistance > MAX_RELIABLE) {
-        Serial.print(newDistance);
-        Serial.println(" > than MAX_RELIABLE");
         newDistance = -1;
     }
     return newDistance;
