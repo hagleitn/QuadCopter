@@ -27,12 +27,12 @@ void RemoteControl::update() {
             int value = pulseIn(pins[i],HIGH,TIMEOUT);
             ufo.writeRaw((QuadCopter::Direction)i,value);
         }
-        mask << 1;
+        mask = mask << 1;
     }
 }
 
 bool RemoteControl::isEngaged() {
     int vertical = ufo.readRaw(QuadCopter::VERTICAL);
     int value = pulseIn(pins[QuadCopter::VERTICAL],HIGH,TIMEOUT);
-    return value > THROTTLE_MIN && value > vertical;
+    return value > THROTTLE_MIN && (value+THROTTLE_DELTA) > vertical;
 }

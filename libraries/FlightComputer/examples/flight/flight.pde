@@ -15,23 +15,23 @@
 #include <RemoteControl.h>
 #include <AutoControl.h>
 
-int aileronOut = 12; //White 
-int rudderOut = 9; //Yellow 
-int throttleOut = 10;  //Orange 
-int elevatorOut = 11; //Red 
-int gainOut = 8;  //Green (Gain/Gear)
+int aileronOut =        12; //White 
+int rudderOut =         13; //Yellow 
+int throttleOut =       10;  //Orange 
+int elevatorOut =       11; //Red 
+int gainOut =           9;  //Green (Gain/Gear)
 
-int aileronIn = 4; //White 
-int rudderIn = 4; //Yellow 
-int throttleIn = 4; //Orange 
-int elevatorIn = 4; //Red 
-int gainIn = 4;  //Green (Gain/Gear)
+int aileronIn =         4; //White 
+int rudderIn =          2; //Yellow 
+int throttleIn =        5; //Orange 
+int elevatorIn =        3; //Red 
+int gainIn =            9;  //Green (Gain/Gear)
 
-int killPin = 3; // LOW kills the flight
-int pingPin = 2; // ultrasound sensor
+int killPin =           9; // LOW kills the flight
+int pingPin =           8; // ultrasound sensor
 
-int longitudinalPin = 5;
-int lateralPin = 6;
+int longitudinalPin =   6;
+int lateralPin =        7;
 long time = 0;
 
 char controlMask = ~(0x01 << 2); // control all inputs but throttle

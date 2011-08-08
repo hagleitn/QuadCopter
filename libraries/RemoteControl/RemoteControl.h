@@ -23,7 +23,8 @@ public:
     
 private:
     
-    static const int THROTTLE_MIN = 100; // min raw value from pulse in to take over
+    static const int THROTTLE_MIN = 1300; // min raw value from pulse in to take over
+    static const int THROTTLE_DELTA = 200; // if manual throttle comes that close to current setting take over
     char controlMask; // all bits set means manual control for the particular servo
     int pins[QuadCopter::DEGREES_OF_FREEDOM];
     int gainPin;

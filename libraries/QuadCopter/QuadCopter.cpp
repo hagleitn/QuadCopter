@@ -58,8 +58,8 @@ void QuadCopter::move(Direction d, int speed) {
     
     Servo &s = this->servos[d];
     
-    speed = map(speed ,MIN_SPEED, MAX_SPEED, 0, 180);   
-    
+    speed = map(speed ,MIN_SPEED, MAX_SPEED, 0, 180);
+        
     if (speed != s.read()) { 
         s.write(speed);
     }

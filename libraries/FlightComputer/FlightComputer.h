@@ -31,7 +31,7 @@ public:
     static const int MIN_TIME_STATUS_MESSAGE = 5000;
     
     // min/max for the automatic control of the throttle
-    static const double MIN_THROTTLE = QuadCopter::MIN_SPEED/2;
+    static const double MIN_THROTTLE = QuadCopter::MIN_SPEED/4;
     static const double MAX_THROTTLE = QuadCopter::MAX_SPEED/2;
     
     // min/max for the automatic control of the aileron and elevator
