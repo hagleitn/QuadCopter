@@ -14,6 +14,11 @@ void RemoteControl::init() {
         pinMode(pins[i], INPUT);
     }
     pinMode(gainPin, INPUT);
+    arm(false);
+}
+
+void RemoteControl::arm(bool arm) {
+    armed = arm;
 }
 
 void RemoteControl::update() {
@@ -32,7 +37,14 @@ void RemoteControl::update() {
 }
 
 bool RemoteControl::isEngaged() {
-    int vertical = ufo.readRaw(QuadCopter::VERTICAL);
     int value = pulseIn(pins[QuadCopter::VERTICAL],HIGH,TIMEOUT);
-    return value > THROTTLE_MIN && (value+THROTTLE_DELTA) > vertical;
+    if (armed) {
+        int vertical = ufo.readRaw(QuadCopter::VERTICAL);
+        return value > THROTTLE_MIN && (value+THROTTLE_DELTA) > vertical;
+    } else {
+        if (value < THROTTLE_MIN) {
+            arm(true);
+        }
+        return false;
+    }
 }

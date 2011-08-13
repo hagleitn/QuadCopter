@@ -70,6 +70,12 @@ void FlightComputerCommandParser::doCmd(const char *cmd) {
                 }
             }
             break;
+        
+        // (Re-)Engage auto throttle
+        case 'e':
+        case 'E':
+            computer.autoControl();
+            break;
             
         // Command "S" turns on/off stabilization
         case 's':

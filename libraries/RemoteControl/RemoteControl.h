@@ -18,6 +18,7 @@ public:
     ~RemoteControl() {}
     void init();
     void update();
+    void arm(bool);
     void setControlMask(char mask) { controlMask = mask; }
     char getControlMask() { return controlMask; }
     
@@ -28,6 +29,7 @@ private:
     char controlMask; // all bits set means manual control for the particular servo
     int pins[QuadCopter::DEGREES_OF_FREEDOM];
     int gainPin;
+    bool armed;
     QuadCopter &ufo;
     
     bool isEngaged();

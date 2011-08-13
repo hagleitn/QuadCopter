@@ -19,7 +19,7 @@ public:
     static const AutoControl::Configuration ACCEL_CONF;    
     
     // Flight computer states
-    typedef enum {GROUND=0, HOVER, LANDING, FAILED, EMERGENCY_LANDING, MANUAL_CONTROL} State;
+    typedef enum {GROUND=0, HOVER, LANDING, FAILED, EMERGENCY_LANDING, MANUAL_CONTROL, ENGAGING_AUTO_CONTROL} State;
         
     // delay between readings of the ultra sound module
     static const int MIN_TIME_ULTRA_SOUND = 100;
@@ -53,6 +53,7 @@ public:
     void land();
     void emergencyDescent();
     void manualControl();
+    void autoControl();
     void abort();
     void adjust();
     void stabilize(bool);

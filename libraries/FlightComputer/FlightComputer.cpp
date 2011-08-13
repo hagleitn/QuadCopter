@@ -80,10 +80,11 @@ void FlightComputer::takeoff(long centimeters) {
 }
 
 void FlightComputer::hover(long centimeters) {
-    if (state == HOVER || state == LANDING) {
+    if (state == HOVER || state == LANDING || state == ENGAGING_AUTO_CONTROL) {
         state = HOVER;
         autoThrottle.setConfiguration(hoverConf);
         autoThrottle.setGoal(centimeters);
+        autoThrottle.engage(true);
     }
 }
 
@@ -96,9 +97,30 @@ void FlightComputer::land() {
     }
 }
 
+void FlightComputer::autoControl() {
+    if (state == MANUAL_CONTROL) {
+        state = ENGAGING_AUTO_CONTROL;
+        
+        // set rc to allow auto control of throttle
+        char controlMask = rc.getControlMask();
+        controlMask = controlMask & (~RemoteControl::THROTTLE_MASK);
+        rc.setControlMask(controlMask);
+        
+        // disarm rc, so it doesn't immediately engage again
+        rc.arm(false);
+        
+        // use current throttle setting and height for start values
+        throttleControl.currentThrottle = ufo.read(QuadCopter::VERTICAL);
+        hover(this->height);
+    }
+}
+
 void FlightComputer::manualControl() {
-    autoThrottle.engage(false);
-    stabilize(false);
+    if (state != MANUAL_CONTROL) {
+        autoThrottle.engage(false);
+        stabilize(false);
+        state = MANUAL_CONTROL;
+    }
 }
 
 void FlightComputer::emergencyDescent() {
@@ -203,6 +225,9 @@ void FlightComputer::adjust() {
                 // nothing
                 break;
             case FAILED:
+                // nothing
+                break;
+            case ENGAGING_AUTO_CONTROL:
                 // nothing
                 break;
             default:
