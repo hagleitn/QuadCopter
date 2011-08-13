@@ -16,7 +16,7 @@ private:
     virtual void setupMeasurement();
     virtual double convert(long);
 
-    static const double MAX_RELIABLE = 367;
+    static const int MAX_RELIABLE = 367;
 };
 
 #endif

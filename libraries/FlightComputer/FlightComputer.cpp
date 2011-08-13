@@ -183,6 +183,10 @@ void FlightComputer::log() {
     Serial.println();
 }
 
+int FlightComputer::limit(const double value, const int min, const int max) {
+    return (int)(value < min ? min : (value > max ? max : value));
+}
+
 void FlightComputer::adjust() {
     time = millis();
     

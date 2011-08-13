@@ -31,15 +31,15 @@ public:
     static const int MIN_TIME_STATUS_MESSAGE = 5000;
     
     // min/max for the automatic control of the throttle
-    static const double MIN_THROTTLE = QuadCopter::MIN_SPEED/4;
-    static const double MAX_THROTTLE = QuadCopter::MAX_SPEED/2;
+    static const int MIN_THROTTLE = QuadCopter::MIN_SPEED/4;
+    static const int MAX_THROTTLE = QuadCopter::MAX_SPEED/2;
     
     // min/max for the automatic control of the aileron and elevator
-    static const double MIN_TILT = QuadCopter::MIN_SPEED/2;
-    static const double MAX_TILT = QuadCopter::MAX_SPEED/2;    
+    static const int MIN_TILT = QuadCopter::MIN_SPEED/2;
+    static const int MAX_TILT = QuadCopter::MAX_SPEED/2;    
     
     // landings will cut the power once this height is reached
-    static const double THROTTLE_OFF_HEIGHT = 10;
+    static const int THROTTLE_OFF_HEIGHT = 10;
     
     // throttle setting for when we don't know the height anymore
     static const int EMERGENCY_DESCENT = -20;
@@ -67,6 +67,9 @@ private:
     AutoControl::Configuration hoverConf;
     AutoControl::Configuration landingConf;
     AutoControl::Configuration accelConf;
+    
+    // limit value to range
+    static int limit(const double val, const int min, const int max);
     
     // Listener to update the height of the flight computer
     class HeightListener : public SignalListener {
@@ -103,15 +106,10 @@ private:
     public:
         ThrottleControl(QuadCopter &ufo) : ufo(ufo), currentThrottle(QuadCopter::MIN_SPEED) {};
         virtual void adjust(double x) {
-            currentThrottle += x;
-            if (currentThrottle > MAX_THROTTLE) {
-                currentThrottle = MAX_THROTTLE;
-            } else if (currentThrottle < MIN_THROTTLE) {
-                currentThrottle = MIN_THROTTLE;
-            }
-            ufo.throttle((int)currentThrottle);
+            currentThrottle = limit(currentThrottle+x, MIN_THROTTLE, MAX_THROTTLE);
+            ufo.throttle(currentThrottle);
         }
-        double currentThrottle;
+        int currentThrottle;
         QuadCopter &ufo;
     };
     
@@ -120,15 +118,10 @@ private:
     public:
         ElevatorControl(QuadCopter &ufo) : ufo(ufo), currentElevator(QuadCopter::STOP_SPEED) {};
         virtual void adjust(double x) {
-            currentElevator = x;
-            if (currentElevator > MAX_TILT) {
-                currentElevator = MAX_TILT;
-            } else if (currentElevator < MIN_TILT) {
-                currentElevator = MIN_TILT;
-            }            
-            ufo.elevator((int)currentElevator);
+            currentElevator = limit(x, MIN_TILT, MAX_TILT);
+            ufo.elevator(currentElevator);
         }
-        double currentElevator;
+        int currentElevator;
         QuadCopter &ufo;
     };
 
@@ -137,15 +130,10 @@ private:
     public:
         AileronControl(QuadCopter &ufo) : ufo(ufo), currentAileron(QuadCopter::STOP_SPEED) {};
         virtual void adjust(double x) {
-            currentAileron = x;
-            if (currentAileron > MAX_TILT) {
-                currentAileron = MAX_TILT;
-            } else if (currentAileron < MIN_TILT) {
-                currentAileron = MIN_TILT;
-            }                        
-            ufo.aileron((int)currentAileron);
+            currentAileron = limit(x, MIN_TILT, MAX_TILT);
+            ufo.aileron(currentAileron);
         }
-        double currentAileron;
+        int currentAileron;
         QuadCopter &ufo;
     };
     

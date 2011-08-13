@@ -13,7 +13,6 @@ public:
 	virtual void fail();
 	
 private:
-    
 	FlightComputer &computer;
 	
 };

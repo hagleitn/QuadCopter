@@ -34,6 +34,8 @@ const int lateralPin =        7; // tilt sensor lat axis
 
 const int listenerSize =      2; // maximum listeners for signal updates
 
+const int baud =              9600;
+
 const char controlMask = ~RemoteControl::THROTTLE_MASK; // control all inputs but throttle
 
 QuadCopter ufo(aileronOut, rudderOut, throttleOut, elevatorOut, gainOut); // the flying machine
@@ -48,7 +50,7 @@ FlightComputerCommandParser parser(computer); // the commands
 SerialController controller(parser, reader); // drives the command processing
 
 void setup() {
-    Serial.begin(9600);
+    Serial.begin(baud);
     ufo.init();
     rc.init();
     rc.setControlMask(controlMask);
