@@ -15,31 +15,32 @@
 #include <RemoteControl.h>
 #include <AutoControl.h>
 
-int aileronOut =        12; //White 
-int rudderOut =         13; //Yellow 
-int throttleOut =       10; //Orange 
-int elevatorOut =       11; //Red 
-int gainOut =           9;  //Green (Gain/Gear)
+const int aileronOut =        12; //White 
+const int rudderOut =         13; //Yellow 
+const int throttleOut =       10; //Orange 
+const int elevatorOut =       11; //Red 
+const int gainOut =           9;  //Green (Gain/Gear)
 
-int aileronIn =         4; //White 
-int rudderIn =          2; //Yellow 
-int throttleIn =        5; //Orange 
-int elevatorIn =        3; //Red 
-int gainIn =            9; //Green (Gain/Gear)
+const int aileronIn =         4; //White 
+const int rudderIn =          2; //Yellow 
+const int throttleIn =        5; //Orange 
+const int elevatorIn =        3; //Red 
+const int gainIn =            9; //Green (Gain/Gear)
 
-int pingPin =           8; // ultrasound sensor
+const int pingPin =           8; // ultrasound sensor
 
-int longitudinalPin =   6; // tilt sensor long axis
-int lateralPin =        7; // tilt sensor lat axis
-long time = 0;
+const int longitudinalPin =   6; // tilt sensor long axis
+const int lateralPin =        7; // tilt sensor lat axis
 
-char controlMask = ~(0x01 << 2); // control all inputs but throttle
+const int listenerSize =      2; // maximum listeners for signal updates
+
+const char controlMask = ~RemoteControl::THROTTLE_MASK; // control all inputs but throttle
 
 QuadCopter ufo(aileronOut, rudderOut, throttleOut, elevatorOut, gainOut); // the flying machine
 RemoteControl rc(ufo,aileronIn, rudderIn, throttleIn, elevatorIn, gainIn); // receives rc input for manual override
-UltraSoundSignal distance(pingPin, 2); // height information
-AccelerometerSignal longitudinalAcceleration(longitudinalPin, 2);
-AccelerometerSignal lateralAcceleration(lateralPin, 2);
+UltraSoundSignal distance(pingPin, listenerSize); // height information
+AccelerometerSignal longitudinalAcceleration(longitudinalPin, listenerSize);
+AccelerometerSignal lateralAcceleration(lateralPin, listenerSize);
 FlightComputer computer(ufo, rc, distance, longitudinalAcceleration, lateralAcceleration); // the auto pilot
 
 HardwareReader reader(Serial); // reading commands (take off, land...) from Serial port
