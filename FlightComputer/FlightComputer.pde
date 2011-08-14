@@ -35,7 +35,7 @@ const int lateralPin =        7; // tilt sensor lat axis
 
 const int listenerSize =      2; // maximum listeners for signal updates
 
-const int baud =              9600;
+const int baud =              9600; // baud rate for serial communication
 
 const char controlMask = ~RemoteControl::THROTTLE_MASK; // control all inputs but throttle
 
