@@ -2,6 +2,7 @@
 #include <iostream>
 #include <unistd.h>
 #include <fcntl.h>
+#include <WProgram.h>
 
 using namespace std;
 
@@ -21,8 +22,18 @@ bool HardwareSerial::available() {
 	if (c == EOF) {
 		return false;
 	} else {
-		ungetc(c,stdin);
-		return true;
+		if (c == 91) {
+			rcDown();
+			return false;
+		} else if (c == 93) {
+			rcUp();
+			return false;
+		} else if (c == 10) {
+			return false;
+		} else {
+			ungetc(c,stdin);
+			return true;
+		}
 	}
 }
 

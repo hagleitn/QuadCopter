@@ -28,23 +28,45 @@ const int lateralPin =        7; // tilt sensor lat axis
 
 const int listenerSize =      2; // maximum listeners for signal updates
 
-int height = 10;
-long lastMillis = 0;
-int lastThrottle = 0;
-const double multiplier = 200/50;
-ofstream myfile;
+static int height = 10;
+static double speed = 0;
+static long lastMillis = 0;
+static int lastThrottle = 0;
+const double multiplier = 100/25.0;
+static ofstream myfile;
+static int rc = 600;
+const int DELTA = 100;
+const int RC_MIN = 600;
+const int RC_MAX = 2400;
 
 void init() {
 	gettimeofday(&start, NULL);
 	myfile.open ("data.txt");
 }
 
+void rcDown() {
+	rc -= DELTA;
+	if (rc < RC_MIN) {
+		rc = RC_MIN;
+	}
+}
+
+void rcUp() {
+	rc += DELTA;
+	if (rc > RC_MAX) {
+		rc = RC_MAX;
+	}
+}
+
 void updateHeight() {
 	if (lastThrottle > -27) {
 		int time = millis();
-		height += ((time - lastMillis)/1000.0)*(multiplier*lastThrottle);
+		double tDelta = (time - lastMillis)/1000.0;
+		speed += tDelta*(multiplier*lastThrottle);
+		height += tDelta*speed;
 		if (height < 10) {
 			height = 10;
+			speed = 0;
 		}
 		myfile << time << "\t" << height << endl;
 		lastMillis = time;
@@ -80,6 +102,8 @@ int pulseIn(int pin, int mode, int time) {
 	if (pin == pingPin) {
 		updateHeight();
 		value = height * 29 * 2;
+	} else if (pin == throttleIn) {
+		value = rc;
 	}
 	
 	return value;

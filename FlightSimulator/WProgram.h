@@ -21,5 +21,7 @@ void pinMode(int pin, int mode);
 void delayMicroseconds(long val);
 void digitalWrite(int pin, int value);
 void throttle(int val);
+void rcUp();
+void rcDown();
 
 #endif

@@ -91,8 +91,8 @@ void FlightComputer::hover(long centimeters) {
 void FlightComputer::land() {
     if (state == HOVER || state == EMERGENCY_LANDING) {
         state = LANDING;
-        autoThrottle.setGoal(zeroHeight);
         autoThrottle.setConfiguration(landingConf);
+        autoThrottle.setGoal(zeroHeight);
         autoThrottle.engage(true);
     }
 }
@@ -183,8 +183,8 @@ void FlightComputer::log() {
     Serial.println();
 }
 
-int FlightComputer::limit(const double value, const int min, const int max) {
-    return (int)(value < min ? min : (value > max ? max : value));
+double FlightComputer::limit(const double value, const int min, const int max) {
+    return value < min ? min : (value > max ? max : value);
 }
 
 void FlightComputer::adjust() {

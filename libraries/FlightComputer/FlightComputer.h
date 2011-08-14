@@ -69,7 +69,7 @@ private:
     AutoControl::Configuration accelConf;
     
     // limit value to range
-    static int limit(const double val, const int min, const int max);
+    static double limit(const double val, const int min, const int max);
     
     // Listener to update the height of the flight computer
     class HeightListener : public SignalListener {
@@ -107,9 +107,9 @@ private:
         ThrottleControl(QuadCopter &ufo) : ufo(ufo), currentThrottle(QuadCopter::MIN_SPEED) {};
         virtual void adjust(double x) {
             currentThrottle = limit(currentThrottle+x, MIN_THROTTLE, MAX_THROTTLE);
-            ufo.throttle(currentThrottle);
+            ufo.throttle((int)currentThrottle);
         }
-        int currentThrottle;
+        double currentThrottle;
         QuadCopter &ufo;
     };
     
@@ -118,7 +118,7 @@ private:
     public:
         ElevatorControl(QuadCopter &ufo) : ufo(ufo), currentElevator(QuadCopter::STOP_SPEED) {};
         virtual void adjust(double x) {
-            currentElevator = limit(x, MIN_TILT, MAX_TILT);
+            currentElevator = (int)limit(x, MIN_TILT, MAX_TILT);
             ufo.elevator(currentElevator);
         }
         int currentElevator;
@@ -130,7 +130,7 @@ private:
     public:
         AileronControl(QuadCopter &ufo) : ufo(ufo), currentAileron(QuadCopter::STOP_SPEED) {};
         virtual void adjust(double x) {
-            currentAileron = limit(x, MIN_TILT, MAX_TILT);
+            currentAileron = (int)limit(x, MIN_TILT, MAX_TILT);
             ufo.aileron(currentAileron);
         }
         int currentAileron;

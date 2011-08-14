@@ -6,6 +6,7 @@ void AutoControl::setConfiguration(const Configuration &conf) {
     derivative = conf[2];
     minCummulative = conf[3];
     maxCummulative = conf[4];
+    isFirst = true;
 }
 
 void AutoControl::update(double value, long time) {
@@ -16,7 +17,7 @@ void AutoControl::update(double value, long time) {
             isFirst = false;
             lastValue = value;
             lastTime = time;
-            lastError = 0;
+            lastError = goal - value;
             cummulativeError = 0;
             return;
         }
@@ -52,7 +53,7 @@ void AutoControl::update(double value, long time) {
         lastValue = value;
         lastError = error;
         lastTime = time;
-        
+                
         control.adjust(pTotal + iTotal + dTotal);
     }
 }

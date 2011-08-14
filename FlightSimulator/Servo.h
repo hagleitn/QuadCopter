@@ -10,5 +10,6 @@ public:
 	int readMicroseconds();
 private:
 	int pin;
+	int value;
 };
 #endif
