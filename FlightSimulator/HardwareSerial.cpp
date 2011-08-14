@@ -31,7 +31,7 @@ char HardwareSerial::read() {
 }
 
 void HardwareSerial::println(byte b, int flag) {
-	cout << hex << "0x" << (int)b << endl;
+	cout << hex << "0x" << (int)b << dec << endl;
 }
 
 void HardwareSerial::print(double f) {

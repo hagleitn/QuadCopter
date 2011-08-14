@@ -2,6 +2,10 @@
 #include <sys/time.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <iostream>
+#include <fstream>
+
+using namespace std;
 
 static struct timeval start;
 
@@ -24,8 +28,32 @@ const int lateralPin =        7; // tilt sensor lat axis
 
 const int listenerSize =      2; // maximum listeners for signal updates
 
+int height = 10;
+long lastMillis = 0;
+int lastThrottle = 0;
+const double multiplier = 200/50;
+ofstream myfile;
+
 void init() {
 	gettimeofday(&start, NULL);
+	myfile.open ("data.txt");
+}
+
+void updateHeight() {
+	if (lastThrottle > -27) {
+		int time = millis();
+		height += ((time - lastMillis)/1000.0)*(multiplier*lastThrottle);
+		if (height < 10) {
+			height = 10;
+		}
+		myfile << time << "\t" << height << endl;
+		lastMillis = time;
+	}
+}
+
+void throttle(int val) {
+	updateHeight();
+	lastThrottle = val;
 }
 
 long millis() {
@@ -42,15 +70,16 @@ long millis() {
 	return mtime;
 }
 
-int map(int val, int srcMin, int srcMax, int dstMin, int dstMax) {
-	return dstMin + ((val-srcMin)/(srcMax-srcMin))*(dstMax-dstMin);
+int map(double val, double srcMin, double srcMax, double dstMin, double dstMax) {
+	return (int)(dstMin + ((val-srcMin)/(srcMax-srcMin))*(dstMax-dstMin));
 }
 
 int pulseIn(int pin, int mode, int time) {
     int value = 0;
 
 	if (pin == pingPin) {
-		value = 10 * 29 * 2;
+		updateHeight();
+		value = height * 29 * 2;
 	}
 	
 	return value;

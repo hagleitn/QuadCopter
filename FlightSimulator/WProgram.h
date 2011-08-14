@@ -15,10 +15,11 @@ void loop(void);
 void setup(void);
 void init();
 long millis();
-int map(int val, int srcMin, int srcMax, int dstMin, int dstMax);
+int map(double val, double srcMin, double srcMax, double dstMin, double dstMax);
 int pulseIn(int pin, int mode, int time=0);
 void pinMode(int pin, int mode);
 void delayMicroseconds(long val);
 void digitalWrite(int pin, int value);
+void throttle(int val);
 
 #endif

@@ -8,5 +8,7 @@ public:
 	void writeMicroseconds(int value);
 	int read();
 	int readMicroseconds();
+private:
+	int pin;
 };
 #endif
