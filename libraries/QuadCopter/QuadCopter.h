@@ -48,6 +48,9 @@ public:
     
 private:
     
+    static const int MIN_SERVO = 1050; // measured min activation
+    static const int MAX_SERVO = 1950; // measured max response
+    
     void arm();
     void attach();
     

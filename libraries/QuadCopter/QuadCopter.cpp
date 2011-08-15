@@ -25,7 +25,8 @@ QuadCopter::QuadCopter(
 
 void QuadCopter::attach() {
     for (int i = 0; i < DEGREES_OF_FREEDOM; ++i) {
-        servos[i].attach(pins[i]);
+        servos[i].attach(pins[i], MIN_SERVO, MAX_SERVO);
+        //servos[i].attach(pins[i]);
     }
     gain.attach(gainPin);
 }

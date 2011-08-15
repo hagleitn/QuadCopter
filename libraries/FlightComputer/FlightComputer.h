@@ -31,8 +31,8 @@ public:
     static const int MIN_TIME_STATUS_MESSAGE = 5000;
     
     // min/max for the automatic control of the throttle
-    static const int MIN_THROTTLE = QuadCopter::MIN_SPEED/4;
-    static const int MAX_THROTTLE = QuadCopter::MAX_SPEED/2;
+    static const int MIN_THROTTLE = QuadCopter::MIN_SPEED+(QuadCopter::MAX_SPEED-QuadCopter::MIN_SPEED)/8;
+    static const int MAX_THROTTLE = QuadCopter::MAX_SPEED-(QuadCopter::MAX_SPEED-QuadCopter::MIN_SPEED)/8;
     
     // min/max for the automatic control of the aileron and elevator
     static const int MIN_TILT = QuadCopter::MIN_SPEED/2;
@@ -42,7 +42,7 @@ public:
     static const int THROTTLE_OFF_HEIGHT = 10;
     
     // throttle setting for when we don't know the height anymore
-    static const int EMERGENCY_DESCENT = -20;
+    static const int EMERGENCY_DESCENT = MIN_THROTTLE;
     
     FlightComputer(QuadCopter&, RemoteControl&, UltraSoundSignal&, AccelerometerSignal&, AccelerometerSignal&);
     ~FlightComputer() {}
