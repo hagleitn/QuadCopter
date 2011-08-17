@@ -16,22 +16,22 @@
 #include <RemoteControl.h>
 #include <AutoControl.h>
 
-const int aileronOut =        12; //White 
-const int rudderOut =         13; //Yellow 
-const int throttleOut =       10; //Orange 
-const int elevatorOut =       11; //Red 
-const int gainOut =           9;  //Green (Gain/Gear)
+const int aileronOut =        5; //White 
+const int rudderOut =         2; //Yellow 
+const int throttleOut =       4; //Orange 
+const int elevatorOut =       3; //Red 
+const int gainOut =          14;  //Green (Gain/Gear)
 
-const int aileronIn =         4; //White 
-const int rudderIn =          2; //Yellow 
-const int throttleIn =        5; //Orange 
-const int elevatorIn =        3; //Red 
-const int gainIn =            9; //Green (Gain/Gear)
+const int aileronIn =         9; //White 
+const int rudderIn =          6; //Yellow 
+const int throttleIn =        8; //Orange 
+const int elevatorIn =        7; //Red 
+const int gainIn =           14; //Green (Gain/Gear)
 
-const int pingPin =           8; // ultrasound sensor
+const int pingPin =          10; // ultrasound sensor
 
-const int longitudinalPin =   6; // tilt sensor long axis
-const int lateralPin =        7; // tilt sensor lat axis
+const int longitudinalPin =  12; // tilt sensor long axis
+const int lateralPin =       13; // tilt sensor lat axis
 
 const int listenerSize =      2; // maximum listeners for signal updates
 
@@ -56,6 +56,7 @@ void setup() {
     rc.init();
     rc.setControlMask(controlMask);
     distance.init();
+	distance.useMedian(false);
     longitudinalAcceleration.init();
     lateralAcceleration.init();
     computer.init();

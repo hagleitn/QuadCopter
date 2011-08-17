@@ -3,7 +3,8 @@
 
 class Servo {
 public:
-	void attach(int);
+    void attach(int);
+	void attach(int,int,int);
 	void write(int value);
 	void writeMicroseconds(int value);
 	int read();

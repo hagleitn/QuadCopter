@@ -106,10 +106,10 @@ private:
     public:
         ThrottleControl(QuadCopter &ufo) : ufo(ufo), currentThrottle(QuadCopter::MIN_SPEED) {};
         virtual void adjust(double x) {
-            currentThrottle = limit(currentThrottle+x, MIN_THROTTLE, MAX_THROTTLE);
-            ufo.throttle((int)currentThrottle);
+            currentThrottle = (int)limit(x, MIN_THROTTLE, MAX_THROTTLE);
+            ufo.throttle(currentThrottle);
         }
-        double currentThrottle;
+        int currentThrottle;
         QuadCopter &ufo;
     };
     

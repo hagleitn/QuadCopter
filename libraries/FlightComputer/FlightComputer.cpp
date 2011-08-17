@@ -1,7 +1,7 @@
 #include <FlightComputer.h>
 
-const AutoControl::Configuration FlightComputer::HOVER_CONF   = { 0.03, 0.005,  0.1, -1000,  1000 };
-const AutoControl::Configuration FlightComputer::LANDING_CONF = { 0.01, 0.0005, 1,   -10000, 10000 };
+const AutoControl::Configuration FlightComputer::HOVER_CONF   = { 0.57, 0.1,  200, -200,  200 };
+const AutoControl::Configuration FlightComputer::LANDING_CONF = { 0.057, 0, 200,   -1000, 1000 };
 const AutoControl::Configuration FlightComputer::ACCEL_CONF   = { 0.05, 0.05,   0.1, -100,   100 };
 
 FlightComputer::FlightComputer(
@@ -124,7 +124,7 @@ void FlightComputer::manualControl() {
 }
 
 void FlightComputer::emergencyDescent() {
-    if (FAILED != state && GROUND != state) {
+    if (FAILED != state && GROUND != state && EMERGENCY_LANDING != state) {
         autoThrottle.engage(false);
         ufo.throttle(EMERGENCY_DESCENT);
         throttleControl.currentThrottle = EMERGENCY_DESCENT;
@@ -169,7 +169,7 @@ void FlightComputer::log() {
     Serial.print(", rc: ");
     Serial.println((byte)rc.getControlMask(),BIN);
     Serial.print("h: ");
-    Serial.print(height-zeroHeight);
+    Serial.print(height/*-zeroHeight*/);
     Serial.print(", y'': ");
     Serial.print(longitudinalForce-zeroLongitudinalForce);
     Serial.print(", x'': ");

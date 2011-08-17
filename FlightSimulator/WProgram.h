@@ -23,5 +23,6 @@ void digitalWrite(int pin, int value);
 void throttle(int val);
 void rcUp();
 void rcDown();
+void startSim(int dur);
 
 #endif

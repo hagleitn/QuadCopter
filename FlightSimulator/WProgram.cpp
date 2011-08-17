@@ -9,39 +9,53 @@ using namespace std;
 
 static struct timeval start;
 
-const int aileronOut =        12; //White 
-const int rudderOut =         13; //Yellow 
-const int throttleOut =       10; //Orange 
-const int elevatorOut =       11; //Red 
-const int gainOut =           9;  //Green (Gain/Gear)
+const int aileronOut =        5; //White 
+const int rudderOut =         2; //Yellow 
+const int throttleOut =       4; //Orange 
+const int elevatorOut =       3; //Red 
+const int gainOut =          14;  //Green (Gain/Gear)
 
-const int aileronIn =         4; //White 
-const int rudderIn =          2; //Yellow 
-const int throttleIn =        5; //Orange 
-const int elevatorIn =        3; //Red 
-const int gainIn =            9; //Green (Gain/Gear)
+const int aileronIn =         9; //White 
+const int rudderIn =          6; //Yellow 
+const int throttleIn =        8; //Orange 
+const int elevatorIn =        7; //Red 
+const int gainIn =           14; //Green (Gain/Gear)
 
-const int pingPin =           8; // ultrasound sensor
+const int pingPin =          10; // ultrasound sensor
 
-const int longitudinalPin =   6; // tilt sensor long axis
-const int lateralPin =        7; // tilt sensor lat axis
+const int longitudinalPin =  12; // tilt sensor long axis
+const int lateralPin =       13; // tilt sensor lat axis
 
 const int listenerSize =      2; // maximum listeners for signal updates
 
 static int height = 10;
 static double speed = 0;
+static double accel = 0;
 static long lastMillis = 0;
 static int lastThrottle = 0;
-const double multiplier = 100/25.0;
+static const double multiplier = 1000/93.0;
+static const double g = 1000;
 static ofstream myfile;
-static int rc = 600;
-const int DELTA = 100;
-const int RC_MIN = 600;
-const int RC_MAX = 2400;
+static int rc = 1150;
+static const int DELTA = 100;
+static const int RC_MIN = 1150;
+static const int RC_MAX = 1950;
+static double error = 0;
+static int duration = 0;
+static bool started = false;
+static const int goal = 150;
+
 
 void init() {
 	gettimeofday(&start, NULL);
 	myfile.open ("data.txt");
+    startSim(100);
+}
+
+void startSim(int dur) {
+    gettimeofday(&start, NULL);
+    duration = dur;
+    started = true;
 }
 
 void rcDown() {
@@ -59,18 +73,31 @@ void rcUp() {
 }
 
 void updateHeight() {
-	if (lastThrottle > -27) {
-		int time = millis();
-		double tDelta = (time - lastMillis)/1000.0;
-		speed += tDelta*(multiplier*lastThrottle);
-		height += tDelta*speed;
-		if (height < 10) {
-			height = 10;
-			speed = 0;
-		}
-		myfile << time << "\t" << height << endl;
-		lastMillis = time;
-	}
+    int time = millis();
+    int oldHeight = height;
+    double tDelta = (time - lastMillis)/1000.0;
+
+    // f = thr*const-g
+    accel = (multiplier*(lastThrottle+75)-g);
+    if (height <= 10 && accel < 0) {
+        accel = 0;
+    }
+
+    speed += tDelta*accel;
+
+    height += tDelta*speed;
+    if (height < 10) {
+        height = 10;
+        speed = 0;
+    }
+
+    double dHeight = goal - ((height+oldHeight)/2.0);
+    if (dHeight < 0) dHeight *= -1;
+    error += dHeight*tDelta;
+    
+    lastMillis = time;
+    
+    myfile << time << "\t" << height << "\t" << speed << "\t" << accel << "\t" << lastThrottle << endl;
 }
 
 void throttle(int val) {
@@ -79,16 +106,24 @@ void throttle(int val) {
 }
 
 long millis() {
-   struct timeval end;
-
+    if (!started) return 0;
+    
+    struct timeval end;
+    
     long mtime, seconds, useconds;    
-
+    
     gettimeofday(&end, NULL);
-
+    
     seconds  = end.tv_sec  - start.tv_sec;
     useconds = end.tv_usec - start.tv_usec;
-
+    
     mtime = ((seconds) * 1000 + useconds/1000.0) + 0.5;
+    //mtime *= 100;
+    
+    if (mtime > duration*1000) {
+        cerr << (long)error << endl;
+        exit(0);
+    }
 	return mtime;
 }
 
