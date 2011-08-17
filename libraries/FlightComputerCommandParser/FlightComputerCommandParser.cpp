@@ -88,8 +88,10 @@ void FlightComputerCommandParser::doCmd(const char *cmd) {
         // Commands "X" stops the thing
         case 'x':
         case 'X':
-        default:
             computer.abort();
+            break;
+        default:
+            fail();
             break;
     }
 }

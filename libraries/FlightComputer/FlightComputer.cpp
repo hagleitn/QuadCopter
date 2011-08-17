@@ -1,8 +1,9 @@
 #include <FlightComputer.h>
 
-const AutoControl::Configuration FlightComputer::HOVER_CONF   = { 0.57, 0.1,  200, -200,  200 };
-const AutoControl::Configuration FlightComputer::LANDING_CONF = { 0.057, 0, 200,   -1000, 1000 };
-const AutoControl::Configuration FlightComputer::ACCEL_CONF   = { 0.05, 0.05,   0.1, -100,   100 };
+//const AutoControl::Configuration FlightComputer::HOVER_CONF   = { 0.57, 0.1,  200, -200,  200 };
+const AutoControl::Configuration FlightComputer::HOVER_CONF   = { 0.57, 0.17,  210, -60,  90 };
+const AutoControl::Configuration FlightComputer::LANDING_CONF = { 0.057, 0.01, 200,   -1000, 1000 };
+const AutoControl::Configuration FlightComputer::ACCEL_CONF   = { 0.5, 0.05,   100, -100,   100 };
 
 FlightComputer::FlightComputer(
         QuadCopter& ufo, 

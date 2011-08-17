@@ -49,7 +49,7 @@ static const int goal = 150;
 void init() {
 	gettimeofday(&start, NULL);
 	myfile.open ("data.txt");
-    startSim(100);
+    //startSim(100);
 }
 
 void startSim(int dur) {
@@ -118,7 +118,7 @@ long millis() {
     useconds = end.tv_usec - start.tv_usec;
     
     mtime = ((seconds) * 1000 + useconds/1000.0) + 0.5;
-    //mtime *= 100;
+    mtime *= 100;
     
     if (mtime > duration*1000) {
         cerr << (long)error << endl;
