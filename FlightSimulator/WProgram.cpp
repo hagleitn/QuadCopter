@@ -120,6 +120,8 @@ long millis() {
     mtime = ((seconds) * 1000 + useconds/1000.0) + 0.5;
     mtime *= 100;
     
+    if (mtime == 0) mtime = 1;
+    
     if (mtime > duration*1000) {
         cerr << (long)error << endl;
         exit(0);

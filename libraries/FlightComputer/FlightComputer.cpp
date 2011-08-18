@@ -2,7 +2,7 @@
 
 //const AutoControl::Configuration FlightComputer::HOVER_CONF   = { 0.57, 0.1,  200, -200,  200 };
 const AutoControl::Configuration FlightComputer::HOVER_CONF   = { 0.57, 0.17,  210, -60,  90 };
-const AutoControl::Configuration FlightComputer::LANDING_CONF = { 0.057, 0.01, 200,   -1000, 1000 };
+const AutoControl::Configuration FlightComputer::LANDING_CONF = { 0, 0.001, 600,   -10000, 10000 };
 const AutoControl::Configuration FlightComputer::ACCEL_CONF   = { 0.5, 0.05,   100, -100,   100 };
 
 FlightComputer::FlightComputer(
@@ -213,7 +213,7 @@ void FlightComputer::adjust() {
                 break;
             case LANDING:
                 // turn off throttle when close to ground
-                if (height < zeroHeight + THROTTLE_OFF_HEIGHT) {
+                if (height <= zeroHeight + THROTTLE_OFF_HEIGHT) {
                     state = GROUND;
                     autoThrottle.engage(false);
                     ufo.throttle(QuadCopter::MIN_SPEED);

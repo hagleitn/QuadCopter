@@ -22,7 +22,7 @@ protected:
     virtual double convert(long) {};
     virtual bool read();
 
-    static const size_t size = 5;
+    static const size_t size = 3;
     
     double measurements[size];
     long time[size];
