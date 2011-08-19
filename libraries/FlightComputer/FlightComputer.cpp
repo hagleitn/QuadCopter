@@ -1,7 +1,7 @@
 #include <FlightComputer.h>
 
 //const AutoControl::Configuration FlightComputer::HOVER_CONF   = { 0.57, 0.1,  200, -200,  200 };
-const AutoControl::Configuration FlightComputer::HOVER_CONF   = { 0.57, 0.17,  210, -60,  90 };
+const AutoControl::Configuration FlightComputer::HOVER_CONF   = { 0.57, 0.0007,  350, -6000,  40000 };
 const AutoControl::Configuration FlightComputer::LANDING_CONF = { 0, 0.001, 600,   -10000, 10000 };
 const AutoControl::Configuration FlightComputer::ACCEL_CONF   = { 0.5, 0.05,   100, -100,   100 };
 

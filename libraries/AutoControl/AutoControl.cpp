@@ -53,6 +53,22 @@ void AutoControl::update(double value, long time) {
         lastValue = value;
         lastError = error;
         lastTime = time;
+        
+        /*Serial.print(time);
+        Serial.print("\t");
+        Serial.print(value);
+        Serial.print("\t");
+        Serial.print(pTotal);
+        Serial.print("\t");
+        Serial.print(iTotal);
+        Serial.print("\t");
+        Serial.print(dTotal);
+        Serial.print("\t");
+        Serial.print(pTotal+iTotal+dTotal);
+        Serial.print("\t");
+        Serial.print(error);
+        Serial.print("\t");
+        Serial.println(cummulativeError);*/
                 
         control.adjust(pTotal + iTotal + dTotal);
     }
