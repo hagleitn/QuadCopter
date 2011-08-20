@@ -22,10 +22,10 @@ const int throttleIn =        8; //Orange
 const int elevatorIn =        7; //Red 
 const int gainIn =           14; //Green (Gain/Gear)
 
-const int pingPin =          10; // ultrasound sensor
+const int ngn =          10; // ultrasound sensor
 
-const int longitudinalPin =  12; // tilt sensor long axis
-const int lateralPin =       13; // tilt sensor lat axis
+const int longitudinaln =  12; // tilt sensor long axis
+const int lateraln =       13; // tilt sensor lat axis
 
 const int listenerSize =      2; // maximum listeners for signal updates
 
@@ -48,9 +48,9 @@ static const int goal = 150;
 
 
 void init() {
-	gettimeofday(&start, NULL);
+    gettimeofday(&start, NULL);
     srand(time(NULL));
-	myfile.open ("data.txt");
+    myfile.open ("data.txt");
     startSim(100);
 }
 
@@ -61,17 +61,17 @@ void startSim(int dur) {
 }
 
 void rcDown() {
-	rc -= DELTA;
-	if (rc < RC_MIN) {
-		rc = RC_MIN;
-	}
+    rc -= DELTA;
+    if (rc < RC_MIN) {
+        rc = RC_MIN;
+    }
 }
 
 void rcUp() {
-	rc += DELTA;
-	if (rc > RC_MAX) {
-		rc = RC_MAX;
-	}
+    rc += DELTA;
+    if (rc > RC_MAX) {
+        rc = RC_MAX;
+    }
 }
 
 void updateHeight() {
@@ -103,8 +103,8 @@ void updateHeight() {
 }
 
 void throttle(int val) {
-	updateHeight();
-	lastThrottle = val;
+    updateHeight();
+    lastThrottle = val;
 }
 
 long millis() {
@@ -128,11 +128,11 @@ long millis() {
         cerr << (long)error << endl;
         exit(0);
     }
-	return mtime;
+    return mtime;
 }
 
 int map(double val, double srcMin, double srcMax, double dstMin, double dstMax) {
-	return (int)(dstMin + ((val-srcMin)/(srcMax-srcMin))*(dstMax-dstMin));
+    return (int)(dstMin + ((val-srcMin)/(srcMax-srcMin))*(dstMax-dstMin));
 }
 
 double rand_double() {
@@ -143,33 +143,33 @@ double rand_double() {
 }
 
 double normal_distribution() {
-    double r = sqrt(-2*log(rand_double()))*cos(2*M_PI*rand_double());
+    double r = sqrt(-2*log(rand_double()))*cos(2*M_*rand_double());
     return r;
 }
 
 
-int pulseIn(int pin, int mode, int time) {
+int pulseIn(int n, int mode, int time) {
     int value = 0;
     
-	if (pin == pingPin) {
-		updateHeight();
+    if (n == ngn) {
+        updateHeight();
         double r = normal_distribution();
-		value = height * 29 * 2 + r * 300;
-	} else if (pin == throttleIn) {
-		value = rc;
-	}
-	
-	return value;
+        value = height * 29 * 2 + r * 300;
+    } else if (n == throttleIn) {
+        value = rc;
+    }
+    
+    return value;
 }
 
-void pinMode(int pin, int mode) {
-	return;
+void nMode(int n, int mode) {
+    return;
 }
 
 void delayMicroseconds(long val) {
-	usleep(val);
+    usleep(val);
 }
 
-void digitalWrite(int pin, int value) {
-	return;
+void digitalWrite(int n, int value) {
+    return;
 }
