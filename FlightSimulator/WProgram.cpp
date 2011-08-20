@@ -78,21 +78,21 @@ void updateHeight() {
     int time = millis();
     int oldHeight = height;
     double tDelta = (time - lastMillis)/1000.0;
-
+    
     // f = thr*const-g
     accel = (multiplier*(lastThrottle+75)-g);
     if (height <= 10 && accel < 0) {
         accel = 0;
     }
-
+    
     speed += tDelta*accel;
-
+    
     height += tDelta*speed;
     if (height < 10) {
         height = 10;
         speed = 0;
     }
-
+    
     double dHeight = goal - ((height+oldHeight)/2.0);
     if (dHeight < 0) dHeight *= -1;
     error += dHeight*tDelta;
@@ -141,16 +141,16 @@ double rand_double() {
     r = r/((double)RAND_MAX);
     return r;
 }
-    
+
 double normal_distribution() {
     double r = sqrt(-2*log(rand_double()))*cos(2*M_PI*rand_double());
     return r;
 }
-    
+
 
 int pulseIn(int pin, int mode, int time) {
     int value = 0;
-
+    
 	if (pin == pingPin) {
 		updateHeight();
         double r = normal_distribution();

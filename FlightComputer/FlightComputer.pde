@@ -56,7 +56,7 @@ void setup() {
     rc.init();
     rc.setControlMask(controlMask);
     distance.init();
-	distance.useMedian(false);
+    distance.useMedian(false);
     longitudinalAcceleration.init();
     lateralAcceleration.init();
     computer.init();
