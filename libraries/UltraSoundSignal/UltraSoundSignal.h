@@ -11,12 +11,11 @@ class UltraSoundSignal : public Signal {
 public:
     UltraSoundSignal(int pingPin, int listenerSize) : Signal(pingPin, listenerSize) {};
     virtual ~UltraSoundSignal(){};
+    static const int MAX_RELIABLE = 367;
 
 private:
     virtual void setupMeasurement();
     virtual double convert(long);
-
-    static const int MAX_RELIABLE = 367;
 };
 
 #endif

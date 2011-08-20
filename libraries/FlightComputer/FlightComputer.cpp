@@ -222,9 +222,11 @@ void FlightComputer::adjust() {
                 break;
             case EMERGENCY_LANDING:
                 // We have entered emergency landing - but the height readings are back.
-                // Let's just land.
-                autoThrottle.engage(true);
-                land();
+                if (autoThrottle.getGoal() >= UltraSoundSignal::MAX_RELIABLE) {
+                    land();
+                } else {
+                    hover(autoThrottle.getGoal());
+                }
                 break;
             case MANUAL_CONTROL:
                 // nothing
