@@ -36,7 +36,8 @@ FlightComputer::FlightComputer(
     time(0), 
     lastTimeHeightSignal(0),
     lastTimeAccelSignal(0),
-    lastTimeLog(0)
+    lastTimeLog(0),
+    lastGoodHeight(0)
 {
     // set initial values to static conf arrays
     setHoverConfiguration(HOVER_CONF);
@@ -199,8 +200,13 @@ void FlightComputer::adjust() {
 
     // no height signal from ultra sound try descending
     if (-1 == height) { 
-        emergencyDescent();
+        if (time - lastGoodHeight > EMERGENCY_DELTA) {
+            emergencyDescent();
+        }
     } else {
+        
+        lastGoodHeight = time;
+        
         switch (state) {
             case GROUND:
                 // calibration
@@ -222,11 +228,7 @@ void FlightComputer::adjust() {
                 break;
             case EMERGENCY_LANDING:
                 // We have entered emergency landing - but the height readings are back.
-                if (autoThrottle.getGoal() >= UltraSoundSignal::MAX_RELIABLE) {
-                    land();
-                } else {
-                    hover(autoThrottle.getGoal());
-                }
+                land();
                 break;
             case MANUAL_CONTROL:
                 // nothing

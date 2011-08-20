@@ -43,6 +43,7 @@ public:
     
     // throttle setting for when we don't know the height anymore
     static const int EMERGENCY_DESCENT = MIN_THROTTLE;
+    static const int EMERGENCY_DELTA = 1000;
     
     FlightComputer(QuadCopter&, RemoteControl&, UltraSoundSignal&, AccelerometerSignal&, AccelerometerSignal&);
     ~FlightComputer() {}
@@ -171,6 +172,7 @@ private:
     long lastTimeHeightSignal;
     long lastTimeAccelSignal;
     long lastTimeLog;
+    long lastGoodHeight;
 };
 
 #endif

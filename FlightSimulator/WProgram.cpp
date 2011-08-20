@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <iostream>
 #include <fstream>
+#include <cmath>
 
 using namespace std;
 
@@ -48,6 +49,7 @@ static const int goal = 150;
 
 void init() {
 	gettimeofday(&start, NULL);
+    srand(time(NULL));
 	myfile.open ("data.txt");
     startSim(100);
 }
@@ -133,12 +135,26 @@ int map(double val, double srcMin, double srcMax, double dstMin, double dstMax) 
 	return (int)(dstMin + ((val-srcMin)/(srcMax-srcMin))*(dstMax-dstMin));
 }
 
+double rand_double() {
+    double r = 0;
+    while ((r = rand()) == 0);
+    r = r/((double)RAND_MAX);
+    return r;
+}
+    
+double normal_distribution() {
+    double r = sqrt(-2*log(rand_double()))*cos(2*M_PI*rand_double());
+    return r;
+}
+    
+
 int pulseIn(int pin, int mode, int time) {
     int value = 0;
 
 	if (pin == pingPin) {
 		updateHeight();
-		value = height * 29 * 2;
+        double r = normal_distribution();
+		value = height * 29 * 2 + r * 300;
 	} else if (pin == throttleIn) {
 		value = rc;
 	}
