@@ -22,10 +22,10 @@ const int throttleIn =        8; //Orange
 const int elevatorIn =        7; //Red 
 const int gainIn =           14; //Green (Gain/Gear)
 
-const int ngn =          10; // ultrasound sensor
+const int pingPin =          10; // ultrasound sensor
 
-const int longitudinaln =  12; // tilt sensor long axis
-const int lateraln =       13; // tilt sensor lat axis
+const int longitudinalPin =  12; // tilt sensor long axis
+const int lateralPin =       13; // tilt sensor lat axis
 
 const int listenerSize =      2; // maximum listeners for signal updates
 
@@ -151,7 +151,7 @@ double normal_distribution() {
 int pulseIn(int n, int mode, int time) {
     int value = 0;
     
-    if (n == ngn) {
+    if (n == pingPin) {
         updateHeight();
         double r = normal_distribution();
         value = height * 29 * 2 + r * 300;
