@@ -3,7 +3,7 @@
 //const AutoControl::Configuration FlightComputer::HOVER_CONF   = { 0.57, 0.1,  200, -200,  200 };
 const AutoControl::Configuration FlightComputer::HOVER_CONF   = { 0.57, 0.0007,  350, -6000,  40000 };
 const AutoControl::Configuration FlightComputer::LANDING_CONF = { 0, 0.001, 600,   -10000, 10000 };
-const AutoControl::Configuration FlightComputer::ACCEL_CONF   = { 0.5, 0.05,   100, -100,   100 };
+const AutoControl::Configuration FlightComputer::ACCEL_CONF   = { 0.5, 0.005,   200, -1000,   1000 };
 
 FlightComputer::FlightComputer(
         QuadCopter& ufo, 
@@ -26,9 +26,10 @@ FlightComputer::FlightComputer(
     aileronControl(ufo), 
     lateralListener(*this), 
     autoAileron(aileronControl),
-    MIN_THROTTLE(QuadCopter::MIN_SPEED+(QuadCopter::MAX_SPEED-QuadCopter::MIN_SPEED)/4),
+    MIN_THROTTLE(QuadCopter::MIN_SPEED+(QuadCopter::MAX_SPEED-QuadCopter::MIN_SPEED)/3),
     MAX_THROTTLE(QuadCopter::MAX_SPEED-(QuadCopter::MAX_SPEED-QuadCopter::MIN_SPEED)/8),
-    state(GROUND), 
+    state(GROUND),
+    lastState(GROUND),
     height(0), 
     zeroHeight(0), 
     longitudinalForce(0), 
@@ -106,6 +107,16 @@ void FlightComputer::land() {
         autoThrottle.setConfiguration(landingConf);
         autoThrottle.setGoal(zeroHeight);
         autoThrottle.engage(true);
+    }
+}
+
+void FlightComputer::failedAltitude() {
+    if (state != ALTITUDE_FAILURE && state != EMERGENCY_LANDING) {
+        state = ALTITUDE_FAILURE;
+        lastState = state;
+        autoThrottle.engage(false);
+        ufo.throttle(EMERGENCY_DESCENT);
+        throttleControl.currentThrottle = EMERGENCY_DESCENT;
     }
 }
 
@@ -209,9 +220,12 @@ void FlightComputer::adjust() {
     }
 
     // no height signal from ultra sound try descending
-    if (-1 == height) { 
-        if (time - lastGoodHeight > EMERGENCY_DELTA) {
-            emergencyDescent();
+    if (-1 == height) {
+        if (GROUND != state) {
+            failedAltitude();
+            if (time - lastGoodHeight > EMERGENCY_DELTA) {
+                emergencyDescent();
+            }
         }
     } else {
         
@@ -235,6 +249,11 @@ void FlightComputer::adjust() {
                     ufo.throttle(QuadCopter::MIN_SPEED);
                     throttleControl.currentThrottle = QuadCopter::MIN_SPEED;
                 }
+                break;
+            case ALTITUDE_FAILURE:
+                // readings are back - re-engage throttle;
+                autoThrottle.engage(true);
+                state = lastState;
                 break;
             case EMERGENCY_LANDING:
                 // We have entered emergency landing - but the height readings are back.

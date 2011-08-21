@@ -19,7 +19,7 @@ public:
     static const AutoControl::Configuration ACCEL_CONF;    
     
     // Flight computer states
-    typedef enum {GROUND=0, HOVER, LANDING, FAILED, EMERGENCY_LANDING, MANUAL_CONTROL, ENGAGING_AUTO_CONTROL} State;
+    typedef enum {GROUND=0, HOVER, LANDING, FAILED, EMERGENCY_LANDING, MANUAL_CONTROL, ENGAGING_AUTO_CONTROL, ALTITUDE_FAILURE} State;
         
     // delay between readings of the ultra sound module
     static const int MIN_TIME_ULTRA_SOUND = 100;
@@ -38,7 +38,7 @@ public:
     static const int THROTTLE_OFF_HEIGHT = 10;
     
     // throttle setting for when we don't know the height anymore
-    static const int EMERGENCY_DESCENT = QuadCopter::MIN_SPEED+(QuadCopter::MAX_SPEED-QuadCopter::MIN_SPEED)/4;
+    static const int EMERGENCY_DESCENT = QuadCopter::STOP_SPEED-(QuadCopter::MAX_SPEED-QuadCopter::MIN_SPEED)/20;
     static const int EMERGENCY_DELTA = 1000;
     
     FlightComputer(QuadCopter&, RemoteControl&, UltraSoundSignal&, AccelerometerSignal&, AccelerometerSignal&);
@@ -48,6 +48,7 @@ public:
     void takeoff(long);
     void hover(long);
     void land();
+    void failedAltitude();
     void emergencyDescent();
     void manualControl();
     void autoControl();
@@ -130,7 +131,7 @@ private:
     public:
         AileronControl(QuadCopter &ufo) : ufo(ufo), currentAileron(QuadCopter::STOP_SPEED) {};
         virtual void adjust(double x) {
-            currentAileron = (int)limit(x, MIN_TILT, MAX_TILT);
+            currentAileron = (int)limit(-x, MIN_TILT, MAX_TILT);
             ufo.aileron(currentAileron);
         }
         int currentAileron;
@@ -161,6 +162,7 @@ private:
     int MAX_THROTTLE;    
     
     State state;
+    State lastState;
     
     double height;
     double zeroHeight;
