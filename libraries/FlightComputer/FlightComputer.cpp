@@ -15,7 +15,7 @@ FlightComputer::FlightComputer(
     ufo(ufo), 
     rc(rc), 
     ultraSound(ultraSound), 
-    throttleControl(ufo), 
+    throttleControl(*this,ufo), 
     heightListener(*this), 
     autoThrottle(throttleControl),
     longitudinalAccel(longitudinalAccel), 
@@ -26,6 +26,8 @@ FlightComputer::FlightComputer(
     aileronControl(ufo), 
     lateralListener(*this), 
     autoAileron(aileronControl),
+    MIN_THROTTLE(QuadCopter::MIN_SPEED+(QuadCopter::MAX_SPEED-QuadCopter::MIN_SPEED)/4),
+    MAX_THROTTLE(QuadCopter::MAX_SPEED-(QuadCopter::MAX_SPEED-QuadCopter::MIN_SPEED)/8),
     state(GROUND), 
     height(0), 
     zeroHeight(0), 
@@ -70,6 +72,14 @@ void FlightComputer::setStabilizerConfiguration(const AutoControl::Configuration
     for (int i = 0; i < sizeof(AutoControl::Configuration)/sizeof(double); ++i) {
         accelConf[i] = conf[i];
     }
+}
+
+void FlightComputer::setMinThrottle(int min) {
+    MIN_THROTTLE = min;
+}
+
+void FlightComputer::setMaxThrottle(int max) {
+    MAX_THROTTLE = max;
 }
 
 void FlightComputer::takeoff(long centimeters) {

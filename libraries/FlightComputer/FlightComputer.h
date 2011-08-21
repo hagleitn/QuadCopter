@@ -29,11 +29,7 @@ public:
     
     // delay between status messages
     static const int MIN_TIME_STATUS_MESSAGE = 5000;
-    
-    // min/max for the automatic control of the throttle
-    static const int MIN_THROTTLE = QuadCopter::MIN_SPEED+(QuadCopter::MAX_SPEED-QuadCopter::MIN_SPEED)/8;
-    static const int MAX_THROTTLE = QuadCopter::MAX_SPEED-(QuadCopter::MAX_SPEED-QuadCopter::MIN_SPEED)/8;
-    
+        
     // min/max for the automatic control of the aileron and elevator
     static const int MIN_TILT = QuadCopter::MIN_SPEED/2;
     static const int MAX_TILT = QuadCopter::MAX_SPEED/2;    
@@ -42,7 +38,7 @@ public:
     static const int THROTTLE_OFF_HEIGHT = 10;
     
     // throttle setting for when we don't know the height anymore
-    static const int EMERGENCY_DESCENT = MIN_THROTTLE;
+    static const int EMERGENCY_DESCENT = QuadCopter::MIN_SPEED+(QuadCopter::MAX_SPEED-QuadCopter::MIN_SPEED)/4;
     static const int EMERGENCY_DELTA = 1000;
     
     FlightComputer(QuadCopter&, RemoteControl&, UltraSoundSignal&, AccelerometerSignal&, AccelerometerSignal&);
@@ -62,13 +58,15 @@ public:
     void setHoverConfiguration(const AutoControl::Configuration &conf);
     void setLandingConfiguration(const AutoControl::Configuration &conf);
     void setStabilizerConfiguration(const AutoControl::Configuration &conf);
+    void setMinThrottle(int);
+    void setMaxThrottle(int);
     
 private:
     // values for the PID controller
     AutoControl::Configuration hoverConf;
     AutoControl::Configuration landingConf;
     AutoControl::Configuration accelConf;
-    
+        
     // limit value to range
     static double limit(const double val, const int min, const int max);
     
@@ -105,12 +103,13 @@ private:
     // adjusts output from PID controller for throttle setting
     class ThrottleControl : public ControlListener {
     public:
-        ThrottleControl(QuadCopter &ufo) : ufo(ufo), currentThrottle(QuadCopter::MIN_SPEED) {};
+        ThrottleControl(FlightComputer &comp, QuadCopter &ufo) : comp(comp), ufo(ufo), currentThrottle(QuadCopter::MIN_SPEED) {};
         virtual void adjust(double x) {
-            currentThrottle = (int)limit(x, MIN_THROTTLE, MAX_THROTTLE);
+            currentThrottle = (int)limit(x, comp.MIN_THROTTLE, comp.MAX_THROTTLE);
             ufo.throttle(currentThrottle);
         }
         int currentThrottle;
+        FlightComputer &comp;
         QuadCopter &ufo;
     };
     
@@ -156,6 +155,10 @@ private:
     AutoControl autoThrottle; // autopilot for throttle
     AutoControl autoElevator; // autopilot for elevator
     AutoControl autoAileron; // autopilot for aileron
+    
+    // min/max for the automatic control of the throttle
+    int MIN_THROTTLE;
+    int MAX_THROTTLE;    
     
     State state;
     

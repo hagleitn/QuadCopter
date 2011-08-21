@@ -31,7 +31,7 @@ bool HardwareSerial::available() {
 		} else if (c == 10) {
 			return false;
 		} else if (((char)c)=='-') { 
-            startSim(100);
+            //startSim(100);
             ungetc(c,stdin);
             return true;
         }

@@ -84,6 +84,22 @@ void FlightComputerCommandParser::doCmd(const char *cmd) {
             if (1 != ret) { fail(); return; }
             computer.stabilize(x==0?false:true);
             break;
+
+        // Set minimum throttle
+        case 'm':
+        case 'M':
+            ret = sscanf(&cmd[2],"%d",&x);
+            if (1 != ret) { fail(); return; }
+            computer.setMinThrottle(ret);
+            break;
+        
+        // Set maximum throttle
+        case 'n':
+        case 'N':
+            ret = sscanf(&cmd[2],"%d",&x);
+            if (1 != ret) { fail(); return; }
+            computer.setMaxThrottle(ret);
+            break;
         
         // Commands "X" stops the thing
         case 'x':

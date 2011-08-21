@@ -143,7 +143,7 @@ double rand_double() {
 }
 
 double normal_distribution() {
-    double r = sqrt(-2*log(rand_double()))*cos(2*M_*rand_double());
+    double r = sqrt(-2*log(rand_double()))*cos(2*M_PI*rand_double());
     return r;
 }
 
@@ -162,7 +162,7 @@ int pulseIn(int n, int mode, int time) {
     return value;
 }
 
-void nMode(int n, int mode) {
+void pinMode(int n, int mode) {
     return;
 }
 
