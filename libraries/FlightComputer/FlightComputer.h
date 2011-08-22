@@ -19,7 +19,7 @@ public:
     static const AutoControl::Configuration ACCEL_CONF;    
     
     // Flight computer states
-    typedef enum {GROUND=0, HOVER, LANDING, FAILED, EMERGENCY_LANDING, MANUAL_CONTROL, ENGAGING_AUTO_CONTROL, ALTITUDE_FAILURE} State;
+    typedef enum {GROUND=0, HOVER, LANDING, FAILED, EMERGENCY_LANDING, MANUAL_CONTROL, ENGAGING_AUTO_CONTROL} State;
         
     // delay between readings of the ultra sound module
     static const int MIN_TIME_ULTRA_SOUND = 100;
@@ -29,10 +29,14 @@ public:
     
     // delay between status messages
     static const int MIN_TIME_STATUS_MESSAGE = 5000;
+    
+    // initial min/max throttle setting
+    static const int MIN_THROTTLE = QuadCopter::MIN_SPEED+(QuadCopter::MAX_SPEED-QuadCopter::MIN_SPEED)/3;
+    static const int MAX_THROTTLE = QuadCopter::MAX_SPEED-(QuadCopter::MAX_SPEED-QuadCopter::MIN_SPEED)/8;
         
     // min/max for the automatic control of the aileron and elevator
     static const int MIN_TILT = QuadCopter::MIN_SPEED/2;
-    static const int MAX_TILT = QuadCopter::MAX_SPEED/2;    
+    static const int MAX_TILT = QuadCopter::MAX_SPEED/2;  
     
     // landings will cut the power once this height is reached
     static const int THROTTLE_OFF_HEIGHT = 10;
@@ -47,6 +51,7 @@ public:
     void init();
     void takeoff(long);
     void hover(long);
+    void ground();
     void land();
     void failedAltitude();
     void emergencyDescent();
@@ -77,6 +82,7 @@ private:
         HeightListener(FlightComputer &comp) : comp(comp) {};
         virtual void update(double x, long time) {
             comp.height = x;
+            comp.lastTimeHeightSignal = time;
         }
         FlightComputer &comp;
     };
@@ -87,6 +93,7 @@ private:
         LongitudinalListener(FlightComputer &comp) : comp(comp) {};
         virtual void update(double x, long time) {
             comp.longitudinalForce = x;
+            comp.lastTimeAccelSignal = time;
         }
         FlightComputer &comp;
     };
@@ -97,6 +104,7 @@ private:
         LateralListener(FlightComputer &comp) : comp(comp) {};
         virtual void update(double x, long time) {
             comp.lateralForce = x;
+            comp.lastTimeAccelSignal = time;
         }
         FlightComputer &comp;
     };    
@@ -104,14 +112,13 @@ private:
     // adjusts output from PID controller for throttle setting
     class ThrottleControl : public ControlListener {
     public:
-        ThrottleControl(FlightComputer &comp, QuadCopter &ufo) : comp(comp), ufo(ufo), currentThrottle(QuadCopter::MIN_SPEED) {};
+        ThrottleControl(FlightComputer &comp) : comp(comp), currentThrottle(QuadCopter::MIN_SPEED) {};
         virtual void adjust(double x) {
-            currentThrottle = (int)limit(x, comp.MIN_THROTTLE, comp.MAX_THROTTLE);
-            ufo.throttle(currentThrottle);
+            currentThrottle = (int)limit(x, comp.minThrottle, comp.maxThrottle);
+            comp.ufo.throttle(currentThrottle);
         }
         int currentThrottle;
         FlightComputer &comp;
-        QuadCopter &ufo;
     };
     
     // adjusts output from PID controller for elevator setting
@@ -131,7 +138,7 @@ private:
     public:
         AileronControl(QuadCopter &ufo) : ufo(ufo), currentAileron(QuadCopter::STOP_SPEED) {};
         virtual void adjust(double x) {
-            currentAileron = (int)limit(-x, MIN_TILT, MAX_TILT);
+            currentAileron = (int)limit(x, MIN_TILT, MAX_TILT);
             ufo.aileron(currentAileron);
         }
         int currentAileron;
@@ -158,11 +165,10 @@ private:
     AutoControl autoAileron; // autopilot for aileron
     
     // min/max for the automatic control of the throttle
-    int MIN_THROTTLE;
-    int MAX_THROTTLE;    
+    int minThrottle;
+    int maxThrottle;    
     
     State state;
-    State lastState;
     
     double height;
     double zeroHeight;
@@ -177,7 +183,6 @@ private:
     long lastTimeHeightSignal;
     long lastTimeAccelSignal;
     long lastTimeLog;
-    long lastGoodHeight;
 };
 
 #endif

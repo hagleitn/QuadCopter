@@ -16,23 +16,25 @@ bool Signal::read() {
     pinMode(pin, INPUT);
     duration = pulseIn(pin, HIGH);
     
-    double newMeasurement = convert(duration);
+    double newMeasurement;
     
-    bool success = true;
-    
-    if (smooth) {
-        median.pushMeasurement(newMeasurement);
-        success = median.getMedian(measurements[index],time[index]);
-    } else {
-        measurements[index] = newMeasurement;
-        time[index] = millis();
-    }
+    bool success = convert(duration,newMeasurement);
     
     if (success) {
-        ++index;
-        if (index >= size) {
-            full = true;
-            index %= size;
+        if (smooth) {
+            median.pushMeasurement(newMeasurement);
+            success = median.getMedian(measurements[index],time[index]);
+        } else {
+            measurements[index] = newMeasurement;
+            time[index] = millis();
+        }
+        
+        if (success) {
+            ++index;
+            if (index >= size) {
+                full = true;
+                index %= size;
+            }
         }
     }
     return success;

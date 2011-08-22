@@ -15,7 +15,7 @@ public:
 
 private:
     virtual void setupMeasurement();
-    virtual double convert(long);
+    virtual bool convert(long, double&);
 };
 
 #endif

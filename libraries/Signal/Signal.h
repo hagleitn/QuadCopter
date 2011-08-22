@@ -19,7 +19,7 @@ public:
     
 protected:
     virtual void setupMeasurement() {};
-    virtual double convert(long) {};
+    virtual bool convert(long, double&) {};
     virtual bool read();
 
     static const size_t size = 3;

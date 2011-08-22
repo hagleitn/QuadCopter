@@ -11,14 +11,11 @@ void UltraSoundSignal::setupMeasurement() {
     digitalWrite(pin, LOW);
 }    
 
-double UltraSoundSignal::convert(long microseconds)
+bool UltraSoundSignal::convert(long microseconds, double& value)
 {
     // The speed of sound is 340 m/s or 29 microseconds per centimeter.
     // The ping travels out and back, so to find the distance of the
     // object we take half of the distance travelled.
-    double newDistance = microseconds / 29 / 2;
-    if (newDistance > MAX_RELIABLE) {
-        newDistance = -1;
-    }
-    return newDistance;
+    value = microseconds / 29 / 2;
+    return value <= MAX_RELIABLE;
 }

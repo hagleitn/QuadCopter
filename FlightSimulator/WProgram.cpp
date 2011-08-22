@@ -45,6 +45,7 @@ static double error = 0;
 static int duration = 0;
 static bool started = false;
 static const int goal = 150;
+static const int ERROR_WEIGHT = 0;
 
 
 void init() {
@@ -154,7 +155,7 @@ int pulseIn(int n, int mode, int time) {
     if (n == pingPin) {
         updateHeight();
         double r = normal_distribution();
-        value = height * 29 * 2 + r * 300;
+        value = height * 29 * 2 + r * ERROR_WEIGHT;
     } else if (n == throttleIn) {
         value = rc;
     }

@@ -14,7 +14,7 @@ public:
     virtual ~AccelerometerSignal(){}
     
 protected:
-    virtual double convert(long microseconds) { return ((microseconds / 10) - 500) * 8; };
+    virtual bool convert(long microseconds, double& value) { value = ((microseconds / 10) - 500) * 8; return true; };
 };
 
 #endif

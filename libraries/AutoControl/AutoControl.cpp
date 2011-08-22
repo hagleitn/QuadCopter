@@ -33,7 +33,7 @@ void AutoControl::update(double value, long time) {
         }
         
         double error = goal - value;
-        double errorDelta = (error - lastError);
+        double errorDelta = error - lastError;
      
         // simple adjustment proportional to the error
         pTotal = proportional * error;
@@ -49,7 +49,7 @@ void AutoControl::update(double value, long time) {
         
         // adjustment to react to the closing speed
         dTotal = derivative * (errorDelta / timeDelta);
-        
+                
         lastValue = value;
         lastError = error;
         lastTime = time;

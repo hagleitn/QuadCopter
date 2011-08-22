@@ -15,7 +15,7 @@ FlightComputer::FlightComputer(
     ufo(ufo), 
     rc(rc), 
     ultraSound(ultraSound), 
-    throttleControl(*this,ufo), 
+    throttleControl(*this), 
     heightListener(*this), 
     autoThrottle(throttleControl),
     longitudinalAccel(longitudinalAccel), 
@@ -26,10 +26,9 @@ FlightComputer::FlightComputer(
     aileronControl(ufo), 
     lateralListener(*this), 
     autoAileron(aileronControl),
-    MIN_THROTTLE(QuadCopter::MIN_SPEED+(QuadCopter::MAX_SPEED-QuadCopter::MIN_SPEED)/3),
-    MAX_THROTTLE(QuadCopter::MAX_SPEED-(QuadCopter::MAX_SPEED-QuadCopter::MIN_SPEED)/8),
+    minThrottle(MIN_THROTTLE),
+    maxThrottle(MAX_THROTTLE),
     state(GROUND),
-    lastState(GROUND),
     height(0), 
     zeroHeight(0), 
     longitudinalForce(0), 
@@ -39,8 +38,7 @@ FlightComputer::FlightComputer(
     time(0), 
     lastTimeHeightSignal(0),
     lastTimeAccelSignal(0),
-    lastTimeLog(0),
-    lastGoodHeight(0)
+    lastTimeLog(0)
 {
     // set initial values to static conf arrays
     setHoverConfiguration(HOVER_CONF);
@@ -76,11 +74,11 @@ void FlightComputer::setStabilizerConfiguration(const AutoControl::Configuration
 }
 
 void FlightComputer::setMinThrottle(int min) {
-    MIN_THROTTLE = min;
+    minThrottle = min;
 }
 
 void FlightComputer::setMaxThrottle(int max) {
-    MAX_THROTTLE = max;
+    maxThrottle = max;
 }
 
 void FlightComputer::takeoff(long centimeters) {
@@ -107,16 +105,6 @@ void FlightComputer::land() {
         autoThrottle.setConfiguration(landingConf);
         autoThrottle.setGoal(zeroHeight);
         autoThrottle.engage(true);
-    }
-}
-
-void FlightComputer::failedAltitude() {
-    if (state != ALTITUDE_FAILURE && state != EMERGENCY_LANDING) {
-        state = ALTITUDE_FAILURE;
-        lastState = state;
-        autoThrottle.engage(false);
-        ufo.throttle(EMERGENCY_DESCENT);
-        throttleControl.currentThrottle = EMERGENCY_DESCENT;
     }
 }
 
@@ -163,6 +151,15 @@ void FlightComputer::abort() {
     throttleControl.currentThrottle = QuadCopter::MIN_SPEED;
 }
 
+void FlightComputer::ground() {
+    if (LANDING == state) {
+        state = GROUND;
+        autoThrottle.engage(false);
+        ufo.throttle(QuadCopter::MIN_SPEED);
+        throttleControl.currentThrottle = QuadCopter::MIN_SPEED;    
+    }
+}
+
 void FlightComputer::stabilize(bool engage) {
     char mask = RemoteControl::AILERON_MASK | RemoteControl::ELEVATOR_MASK;
     char controlMask = rc.getControlMask();
@@ -204,6 +201,7 @@ void FlightComputer::log() {
     Serial.print(", a: ");
     Serial.println(aileronControl.currentAileron);
     Serial.println();
+    lastTimeLog = time;
 }
 
 double FlightComputer::limit(const double value, const int min, const int max) {
@@ -213,6 +211,8 @@ double FlightComputer::limit(const double value, const int min, const int max) {
 void FlightComputer::adjust() {
     time = millis();
     
+    // the following state transitions can origin in any state
+    
     // allow for manual inputs first
     rc.update();
     if (rc.getControlMask() == RemoteControl::FULL_MANUAL) {
@@ -220,74 +220,61 @@ void FlightComputer::adjust() {
     }
 
     // no height signal from ultra sound try descending
-    if (-1 == height) {
-        if (GROUND != state) {
-            failedAltitude();
-            if (time - lastGoodHeight > EMERGENCY_DELTA) {
-                emergencyDescent();
-            }
-        }
-    } else {
-        
-        lastGoodHeight = time;
-        
-        switch (state) {
-            case GROUND:
-                // calibration
-                zeroHeight = height;
-                zeroLongitudinalForce = longitudinalForce;
-                zeroLateralForce = lateralForce;
-                break;
-            case HOVER:
-                // nothing
-                break;
-            case LANDING:
-                // turn off throttle when close to ground
-                if (height <= zeroHeight + THROTTLE_OFF_HEIGHT) {
-                    state = GROUND;
-                    autoThrottle.engage(false);
-                    ufo.throttle(QuadCopter::MIN_SPEED);
-                    throttleControl.currentThrottle = QuadCopter::MIN_SPEED;
-                }
-                break;
-            case ALTITUDE_FAILURE:
-                // readings are back - re-engage throttle;
-                autoThrottle.engage(true);
-                state = lastState;
-                break;
-            case EMERGENCY_LANDING:
-                // We have entered emergency landing - but the height readings are back.
-                land();
-                break;
-            case MANUAL_CONTROL:
-                // nothing
-                break;
-            case FAILED:
-                // nothing
-                break;
-            case ENGAGING_AUTO_CONTROL:
-                // nothing
-                break;
-            default:
-                // this is bad
-                land();
-                break;
-        }
+    if (time - lastTimeHeightSignal > EMERGENCY_DELTA) {
+        emergencyDescent();
     }
+    
+    // here are specific transitions
+    
+    switch (state) {
+        case GROUND:
+            // calibration
+            zeroHeight = height;
+            zeroLongitudinalForce = longitudinalForce;
+            zeroLateralForce = lateralForce;
+            break;
+        case HOVER:
+            // nothing
+            break;
+        case LANDING:
+            // turn off throttle when close to ground
+            if (height <= zeroHeight + THROTTLE_OFF_HEIGHT) {
+                ground();
+            }
+            break;
+        case EMERGENCY_LANDING:
+            // if we have another reading land
+            if (time - lastTimeHeightSignal < EMERGENCY_DELTA) {
+                land();
+            }
+            break;
+        case MANUAL_CONTROL:
+            // nothing
+            break;
+        case FAILED:
+            // nothing
+            break;
+        case ENGAGING_AUTO_CONTROL:
+            // nothing
+            break;
+        default:
+            // this is bad
+            land();
+            break;
+    }
+    
+    // sensors and log
     
     if (time - lastTimeHeightSignal > MIN_TIME_ULTRA_SOUND) {
         ultraSound.signal();
-        lastTimeHeightSignal = time;
     }
     
-    if (time -lastTimeLog > MIN_TIME_STATUS_MESSAGE) {
+    if (time - lastTimeLog > MIN_TIME_STATUS_MESSAGE) {
         log();
-        lastTimeLog = time;
     }
     
     if (time - lastTimeAccelSignal > MIN_TIME_ACCEL) {
         longitudinalAccel.signal();
         lateralAccel.signal();
-        lastTimeAccelSignal = time;
     }
 }
