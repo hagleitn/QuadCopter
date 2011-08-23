@@ -6,15 +6,19 @@ void Signal::init() {
     for (int i = 0; i < listenerSize; ++i) {
         listener[i] = 0;
     }
-};
+}
+
+long Signal::measure() {
+    pinMode(pin, INPUT);
+    return pulseIn(pin, HIGH);
+}
 
 bool Signal::read() {
     long duration;
     
     setupMeasurement();
 
-    pinMode(pin, INPUT);
-    duration = pulseIn(pin, HIGH);
+    duration = measure();
     
     double newMeasurement;
     

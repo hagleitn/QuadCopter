@@ -19,6 +19,7 @@ public:
     
 protected:
     virtual void setupMeasurement() {};
+    virtual long measure();
     virtual bool convert(long, double&) {};
     virtual bool read();
 
